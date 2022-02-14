@@ -122,11 +122,13 @@ module.exports = (app) => {
 			);
 
 			modulo.removidoEm = new Date();
-			app.db(tabela.modulos)
+			const deletadas = app
+				.db(tabela.modulos)
 				.update(modulo)
-				.where({ id: modulo.id })
-				.then((_) => res.status(204).send())
-				.catch((erro) => res.status(500).send(erro));
+				.where({ id: modulo.id });
+
+			validacao.existeOuErro(deletadas, notificacao.usuarioNaoEncontrado);
+			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);
 		}
