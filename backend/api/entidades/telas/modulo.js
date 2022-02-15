@@ -9,14 +9,6 @@ module.exports = (app) => {
 			const modulo = { nome: req.body.nome, idTela: req.body.idTela };
 			validacao.existeOuErro(modulo.nome, notificacao.nomeNaoInformado);
 
-			const verificarSeExisteTelaNoBanco = await app
-				.db(tabela.telas)
-				.where({ id: modulo.idTela });
-			validacao.existeOuErro(
-				verificarSeExisteTelaNoBanco,
-				"Tela não encontrada!"
-			);
-
 			app.db(tabela.modulos)
 				.insert(modulo)
 				.then((_) => res.status(204).send())
@@ -43,14 +35,15 @@ module.exports = (app) => {
 				notificacao.moduloNaoEncontrado
 			);
 
-			const verificarVinculoComAlgumaTela = await app
-				.db(tabela.telas)
-				.where({ idModulo: modulo.id });
+			// SEM USO
+			// const verificarVinculoComAlgumaTela = await app
+			// 	.db(tabela.telas)
+			// 	.where({ idModulo: modulo.id });
 
-			validacao.naoExisteOuErro(
-				verificarVinculoComAlgumaTela,
-				"Este módulo possui uma tela vinculada!"
-			);
+			// validacao.existeOuErro(
+			// 	verificarVinculoComAlgumaTela,
+			// 	'Este módulo possui uma tela vinculada!'
+			// );
 
 			modulo.alteradoEm = new Date();
 			app.db(tabela.modulos)
@@ -97,28 +90,26 @@ module.exports = (app) => {
 
 	const remover = async (req, res) => {
 		try {
-			const modulo = {
-				id: req.params.id,
-				nome: req.body.nome,
-				idTela: req.body.idTela,
-			};
-			// if (req.params.id) modulo.id = req.params.id;
-			validacao.numeroOuErro(modulo.id, "ID inválido!");
+			const modulo = { ...req.body };
+			if (req.params.id) modulo.id = req.params.id;
+			validacao.numeroOuErro(modulo.id, 'ID inválido!');
 
 			verificarSeExisteModulo = await app
 				.db(tabela.modulos)
-				.where({ id: modulo.id });
+				.where({ id: modulo.id })
+				.first();
 			validacao.existeOuErro(
 				verificarSeExisteModulo,
-				"Módulo não encontrado!"
+				'Módulo não encontrado!'
 			);
 
 			verificarTelaVinculada = await app
 				.db(tabela.telas)
-				.where({ id: modulo.idTela });
+				.where({ id: modulo.idTela })
+				.first();
 			validacao.naoExisteOuErro(
 				verificarTelaVinculada,
-				"Módulo possuí telas vinculadas!"
+				'Módulo possuí telas vinculadas!'
 			);
 
 			modulo.removidoEm = new Date();

@@ -1,5 +1,5 @@
 // criptografar senha
-const bcrypt = require("bcrypt-nodejs");
+const bcrypt = require('bcrypt-nodejs');
 
 module.exports = (app) => {
 	const notificacao = app.api.config.notificacoes;
@@ -18,12 +18,22 @@ module.exports = (app) => {
 			const usuario = { ...req.body };
 
 			// validações para persistencia dos dados
+			validacao.existeOuErro(usuario.nome, notificacao.nomeNaoInformado);
 			validacao.existeOuErro(
-				[usuario.nome, notificacao.nomeNaoInformado],
-				[usuario.email, notificacao.emailNaoInformado],
-				[usuario.usuario, notificacao.usuarioNaoInformado],
-				[usuario.senha, notificacao.senhaNaoInformada],
-				[usuario.confirmacaoSenha, notificacao.confirmacaoInvalida]
+				usuario.email,
+				notificacao.emailNaoInformado
+			);
+			validacao.existeOuErro(
+				usuario.usuario,
+				notificacao.usuarioNaoInformado
+			);
+			validacao.existeOuErro(
+				usuario.senha,
+				notificacao.senhaNaoInformada
+			);
+			validacao.existeOuErro(
+				usuario.confirmacaoSenha,
+				notificacao.confirmacaoInvalida
 			);
 			validacao.igualOuErro(
 				usuario.senha,
