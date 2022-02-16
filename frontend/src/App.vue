@@ -1,6 +1,10 @@
 <template>
-	<div id="app" :class="{ 'esconder-menu': !menuVisivel }">
-		<Cabecalho titulo="MV Souluções" :esconderToggle="false" />
+	<div id="app" :class="{ 'esconder-menu': menuVisivel }">
+		<Cabecalho
+			titulo="MV Souluções"
+			:esconderToggle="false"
+			:esconderMenuUsuario="false"
+		/>
 		<Menu />
 		<Conteudo />
 		<Rodape />
@@ -10,7 +14,7 @@
 <script>
 	import { mapState } from "vuex";
 	import Cabecalho from "./componentes/templates/Cabecalho.vue";
-	import Menu from "./componentes/templates/Menu.vue";
+	import Menu from "./componentes/templates/menu/Menu";
 	import Conteudo from "./componentes/templates/Conteudo.vue";
 	import Rodape from "./componentes/templates/Rodape.vue";
 

@@ -8,9 +8,9 @@ exports.up = function (knex, Promise) {
 			.inTable("unidades")
 			.notNull();
 		tabela
-			.integer("idClasse")
+			.integer("idEspecie")
 			.references("id")
-			.inTable("classes")
+			.inTable("especies")
 			.notNull();
 		tabela.timestamp("removidoEm");
 		tabela.timestamp("alteradoEm");

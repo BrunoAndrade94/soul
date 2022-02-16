@@ -1,10 +1,12 @@
 <template>
-	<div class="conteudo"></div>
+	<div class="conteudo">
+		<router-view></router-view>
+	</div>
 </template>
 
 <script>
 	export default {
-		name: "Conteudo",
+		nome: "Conteudo",
 	};
 </script>
 

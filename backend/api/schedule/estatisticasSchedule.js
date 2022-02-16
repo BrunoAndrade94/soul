@@ -1,15 +1,12 @@
-// const schedule = require('node-schedule');
+// const schedule = require("node-schedule");
 
 // module.exports = (app) => {
-// 	schedule.scheduleJob('*/1 * * * *', async () => {
-// 		const totalUsuarios = await app.db('usuarios').count('id').first();
-// 		const totalProdutos = await app.db('produtos').count('id').first();
-// 		const totalFornecedores = await app
-// 			.db('fornecedores')
-// 			.count('id')
-// 			.first();
+// 	schedule.scheduleJob("*/1 * * * *", async () => {
+// 		const totalUsuarios = await app.db("usuarios").count("id").first();
+// 		const totalProdutos = await app.db("produtos").count("id").first();
+// 		const totalmodulos = await app.db("modulos").count("id").first();
 
-// 		const { Estatistica } = app.api.relatorios.proprios.estatistica;
+// 		const { Estatistica } = app.api.relatorios.proprios.estatisticas;
 
 // 		const ultimaEstatistica = await Estatistica.findOne(
 // 			{},
@@ -20,7 +17,7 @@
 // 		const estatistica = new Estatistica({
 // 			usuarios: totalUsuarios.count,
 // 			produtos: totalProdutos.count,
-// 			fornecedores: totalFornecedores.count,
+// 			modulos: totalmodulos.count,
 // 			criadoEm: new Date(),
 // 		});
 
@@ -30,14 +27,14 @@
 // 		const mudouProdutos =
 // 			!ultimaEstatistica ||
 // 			estatistica.produtos !== ultimaEstatistica.produtos;
-// 		const mudouFornecedores =
+// 		const mudouModulos =
 // 			!ultimaEstatistica ||
-// 			estatistica.fornecedores !== ultimaEstatistica.fornecedores;
+// 			estatistica.modulos !== ultimaEstatistica.modulos;
 
-// 		if (mudouUsuarios || mudouProdutos || mudouFornecedores) {
+// 		if (mudouUsuarios || mudouProdutos || mudouModulos) {
 // 			estatistica
 // 				.save()
-// 				.then(() => console.log('Estatisticas atualizadas!'));
+// 				.then(() => console.log("Estatisticas atualizadas!"));
 // 		}
 // 	});
 // };

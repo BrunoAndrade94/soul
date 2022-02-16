@@ -4,17 +4,23 @@
 			<i class="fa fa-lg" :class="icone"></i>
 		</a>
 		<h1 class="titulo">
-			{{ titulo }}
+			<router-link to="/">
+				{{ titulo }}
+			</router-link>
 		</h1>
+		<MenuUsuario v-if="!esconderMenuUsuario" />
 	</header>
 </template>
 
 <script>
+	import MenuUsuario from "./menu/MenuUsuario";
 	export default {
 		name: "Cabecalho",
+		components: { MenuUsuario },
 		props: {
 			titulo: String,
 			esconderToggle: Boolean,
+			esconderMenuUsuario: Boolean,
 		},
 		computed: {
 			icone() {
@@ -45,18 +51,23 @@
 		color: antiquewhite;
 		font-weight: 100;
 		flex-grow: 1;
-		text-align: center;
+		text-align: left;
+		padding: 20px;
 	}
 
 	.titulo a {
 		color: whitesmoke;
-		text-decoration: underline;
+		text-decoration: none;
+	}
+	.titulo a:hover {
+		text-decoration: none;
+		color: white;
 	}
 
 	header.cabecalho > a.toggle {
 		width: 60px;
 		height: 100%;
-		color: black;
+		color: white;
 		justify-self: flex-start;
 		text-decoration: none;
 
@@ -66,6 +77,7 @@
 	}
 
 	header.cabecalho > a.toggle:hover {
+		color: white;
 		background-color: rgba(0, 0, 0, 0.2);
 	}
 </style>

@@ -1,5 +1,5 @@
 exports.up = function (knex, Promise) {
-	return knex.schema.createTable("classes", (tabela) => {
+	return knex.schema.createTable("especies", (tabela) => {
 		tabela.increments("id").primary();
 		tabela.string("nome").notNull();
 		tabela.timestamp("removidoEm");
@@ -8,5 +8,5 @@ exports.up = function (knex, Promise) {
 };
 
 exports.down = function (knex, Promise) {
-	return knex.schema.dropTable("classes");
+	return knex.schema.dropTable("especies");
 };

@@ -92,24 +92,22 @@ module.exports = (app) => {
 		try {
 			const modulo = { ...req.body };
 			if (req.params.id) modulo.id = req.params.id;
-			validacao.numeroOuErro(modulo.id, 'ID inválido!');
+			validacao.numeroOuErro(modulo.id, "ID inválido!");
 
-			verificarSeExisteModulo = await app
+			const verificarSeExisteModulo = await app
 				.db(tabela.modulos)
-				.where({ id: modulo.id })
-				.first();
+				.where({ id: modulo.id });
 			validacao.existeOuErro(
 				verificarSeExisteModulo,
-				'Módulo não encontrado!'
+				"Módulo não encontrado!"
 			);
 
-			verificarTelaVinculada = await app
+			const verificarTelaVinculada = await app
 				.db(tabela.telas)
-				.where({ id: modulo.idTela })
-				.first();
+				.where({ id: modulo.idTela });
 			validacao.naoExisteOuErro(
 				verificarTelaVinculada,
-				'Módulo possuí telas vinculadas!'
+				"Módulo possuí telas vinculadas!"
 			);
 
 			modulo.removidoEm = new Date();
@@ -117,7 +115,6 @@ module.exports = (app) => {
 				.db(tabela.modulos)
 				.update(modulo)
 				.where({ id: modulo.id });
-
 			validacao.existeOuErro(deletadas, notificacao.usuarioNaoEncontrado);
 			res.status(204).send();
 		} catch (erro) {
