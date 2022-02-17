@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt-nodejs");
 
 module.exports = (app) => {
 	const login = async (req, res) => {
+		// const usuario = { ...req.body };
 		// verificando se foi fornecido usuário e senha
 		if (!req.body.usuario) {
 			return res.status(400).send("Informe o Usuário!");

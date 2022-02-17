@@ -58,8 +58,22 @@ module.exports = (app) => {
 
 	const obter = (req, res) => {
 		app.db(tabela.modulos)
-			.then((modulos) => res.json(modulos))
+			.whereNull(coluna.removidoEm)
+			.then((modulos) => res.json(comCaminho(modulos)))
 			.catch((erro) => res.status(500).send(erro));
+	};
+
+	const obterPorId = (req, res) => {
+		try {
+			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			app.db(tabela.modulos)
+				.where({ id: req.params.id })
+				.whereNull(coluna.removidoEm)
+				.then((modulo) => res.json(comCaminho(modulo)))
+				.catch((erro) => res.status(500).send(erro));
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
 	};
 
 	const comCaminho = (modulos) => {
@@ -79,7 +93,7 @@ module.exports = (app) => {
 			return { ...modulo, caminho };
 		});
 
-		modulosComCaminho.sort(a, (b) => {
+		modulosComCaminho.sort((a, b) => {
 			if (a.caminho < b.caminho) return -1;
 			if (a.caminho > b.caminho) return 1;
 			return 0;
@@ -90,37 +104,90 @@ module.exports = (app) => {
 
 	const remover = async (req, res) => {
 		try {
-			const modulo = { ...req.body };
-			if (req.params.id) modulo.id = req.params.id;
-			validacao.numeroOuErro(modulo.id, "ID inválido!");
+			const modulo = { ...req.params };
+			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
 
 			const verificarSeExisteModulo = await app
 				.db(tabela.modulos)
-				.where({ id: modulo.id });
+				.where({ id: modulo.id })
+				.first();
+
 			validacao.existeOuErro(
 				verificarSeExisteModulo,
-				"Módulo não encontrado!"
+				notificacao.moduloNaoEncontrado
 			);
 
 			const verificarTelaVinculada = await app
 				.db(tabela.telas)
-				.where({ id: modulo.idTela });
+				.where({ idModulo: modulo.id });
+
 			validacao.naoExisteOuErro(
 				verificarTelaVinculada,
-				"Módulo possuí telas vinculadas!"
+				notificacao.moduloPossuiTelas
 			);
 
-			modulo.removidoEm = new Date();
-			const deletadas = app
+			const deletada = await app
 				.db(tabela.modulos)
-				.update(modulo)
+				.update({ removidoEm: new Date() })
 				.where({ id: modulo.id });
-			validacao.existeOuErro(deletadas, notificacao.usuarioNaoEncontrado);
+
+			validacao.existeOuErro(deletada, notificacao.moduloNaoEncontrado);
 			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);
 		}
 	};
 
-	return { incluir, atualizar, remover, obter };
+	// NÃO ESTÁ FUNCIONANDO
+	const recuperarRemovido = async (req, res) => {
+		try {
+			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+
+			const verificarSeExisteModulo = await app
+				.db(tabela.modulos)
+				.where({ id: req.params.id })
+				.first();
+
+			validacao.existeOuErro(
+				verificarSeExisteModulo,
+				notificacao.moduloNaoEncontrado
+			);
+
+			const recuperada = await app
+				.db(tabela.modulos)
+				.update({ removidoEm: null })
+				.where({ id: req.params.id });
+
+			validacao.existeOuErro(recuperada, notificacao.moduloNaoEncontrado);
+			res.status(204).send();
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
+	};
+
+	const paraArvore = (modulos, arvore) => {
+		if (!arvore) arvore = modulos.filter((modulo) => !modulo.idTela);
+		arvore = arvore.map((tela) => {
+			const seForFilhe = (nó) => nó.idTela == tela.id;
+			tela.children = paraArvore(modulos, modulos.filter(seForFilhe));
+			return tela;
+		});
+		return arvore;
+	};
+
+	const obterArvore = (req, res) => {
+		app.db(tabela.modulos)
+			.then((modulos) => modulos.json(modulos))
+			.catch((erro) => res.status(500).send(erro));
+	};
+
+	return {
+		incluir,
+		atualizar,
+		remover,
+		recuperarRemovido,
+		obter,
+		obterPorId,
+		obterArvore,
+	};
 };

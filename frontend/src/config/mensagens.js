@@ -15,5 +15,6 @@ Vue.toasted.register(
 Vue.toasted.register(
 	"erroPadrao",
 	(msg) => (!msg.msg ? "Ops.. erro inesperado!" : msg.msg),
+	// "erro inesperado!",
 	{ type: "error", icon: "times" }
 );

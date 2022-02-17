@@ -38,7 +38,16 @@ module.exports = (app) => {
 		.post(app.api.entidades.telas.modulo.incluir)
 		.get(app.api.entidades.telas.modulo.obter);
 
+	app.route("/modulos/arvore").get(
+		app.api.entidades.telas.modulo.obterArvore
+	);
+
+	app.route("/recuperarModulos/id").post(
+		app.api.entidades.telas.modulo.recuperarRemovido
+	);
+
 	app.route("/modulos/:id")
+		.get(app.api.entidades.telas.modulo.obterPorId)
 		.delete(app.api.entidades.telas.modulo.remover)
 		.put(app.api.entidades.telas.modulo.atualizar);
 
