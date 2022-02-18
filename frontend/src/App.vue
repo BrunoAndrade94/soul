@@ -1,22 +1,26 @@
 <template>
-	<div id="app" :class="{ 'esconder-menu': menuVisivel }">
+	<div id="app" :class="{ 'esconder-menu': menuVisivel || !usuario }">
 		<Cabecalho
 			titulo="MV Souluções"
-			:esconderToggle="false"
-			:esconderMenuUsuario="false"
+			:esconderToggle="!usuario"
+			:esconderMenuUsuario="!usuario"
 		/>
-		<Menu />
-		<Conteudo />
+		<Menu v-if="usuario" />
+		<!-- <Loading v-if="validandoToken" /> -->
+		<Conteudo v-else />
 		<Rodape />
 	</div>
 </template>
 
 <script>
+	import axios from "axios";
 	import { mapState } from "vuex";
+	import { baseApi, chaveUsuario } from "@/global";
 	import Cabecalho from "./componentes/templates/Cabecalho.vue";
 	import Menu from "./componentes/templates/menu/Menu";
 	import Conteudo from "./componentes/templates/Conteudo.vue";
 	import Rodape from "./componentes/templates/Rodape.vue";
+	import Loading from "./componentes/templates/Loading.vue";
 
 	export default {
 		name: "App",
@@ -25,8 +29,41 @@
 			Menu,
 			Conteudo,
 			Rodape,
+			Loading,
 		},
-		computed: mapState(["menuVisivel"]),
+		computed: mapState(["menuVisivel", "usuario"]),
+		data: function () {
+			return {
+				validandoToken: true,
+			};
+		},
+		methods: {
+			async validarToken() {
+				this.validandoToken = true;
+
+				const json = localStorage.getItem(chaveUsuario);
+				const dadosUsuario = JSON.parse(json);
+				this.$store.commit("definirUsuario", null);
+
+				if (!dadosUsuario) {
+					this.validandoToken = false;
+					return this.$router.push({ path: "logar" });
+				}
+
+				const res = await axios.post(`${baseApi}validarToken`, dadosUsuario);
+
+				if (res.data) {
+					this.$store.commit("definirUsuario", dadosUsuario);
+				} else {
+					localStorage.removeItem(chaveUsuario);
+					this.$router.push({ path: "logar" });
+				}
+				this.validandoToken = false;
+			},
+		},
+		created() {
+			this.validarToken();
+		},
 	};
 </script>
 

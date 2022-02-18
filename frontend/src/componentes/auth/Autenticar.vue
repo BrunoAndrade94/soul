@@ -27,6 +27,7 @@
 				type="password"
 				placeholder="Confirmação de Senha"
 			/>
+
 			<button v-if="mostrarLogin" @click="cadastro">Registrar</button>
 			<button v-else @click="login">Entrar</button>
 			<hr />
@@ -43,7 +44,7 @@
 	import axios from "axios";
 	export default {
 		nome: "Autenticar",
-		data: () => {
+		data: function () {
 			return {
 				mostrarLogin: false,
 				usuario: {},
@@ -53,9 +54,9 @@
 			// responsavel por fazer o login
 			login() {
 				axios
-					.post(`${baseApi}login`, this.usuario)
+					.post(`${baseApi}logar`, this.usuario)
 					.then((res) => {
-						this.$store.commit("setUser", res.data);
+						this.$store.commit("definirUsuario", res.data);
 						localStorage.setItem(chaveUsuario, JSON.stringify(res.data));
 						this.$router.push({ path: "/" });
 					})
@@ -65,7 +66,7 @@
 				axios
 					.post(`${baseApi}cadastro`, this.usuario)
 					.then(() => {
-						this.$store.global.sucessoPadrao();
+						this.$toasted.global.sucessoPadrao();
 						this.usuario = {};
 						this.mostrarLogin = false;
 					})
@@ -85,6 +86,7 @@
 	.autenticar-modal {
 		background-color: #fff;
 		width: 350px;
+		box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 		padding: 55px;
 		display: flex;
 		flex-direction: column;

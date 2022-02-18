@@ -4,9 +4,9 @@
 			<i class="fa fa-lg" :class="icone"></i>
 		</a>
 		<h1 class="titulo">
-			<router-link to="/">
-				{{ titulo }}
-			</router-link>
+			<!-- <router-link to="/"> -->
+			{{ titulo }}
+			<!-- </router-link> -->
 		</h1>
 		<MenuUsuario v-if="!esconderMenuUsuario" />
 	</header>

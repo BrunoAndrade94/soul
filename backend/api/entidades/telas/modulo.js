@@ -6,8 +6,19 @@ module.exports = (app) => {
 
 	const incluir = async (req, res) => {
 		try {
-			const modulo = { nome: req.body.nome, idTela: req.body.idTela };
+			const modulo = { nome: req.body.nome, maeId: req.body.maeId };
 			validacao.existeOuErro(modulo.nome, notificacao.nomeNaoInformado);
+
+			if (modulo.maeId !== undefined) {
+				const verificarModuloExiste = await app
+					.db(tabela.modulos)
+					.where({ id: modulo.maeId })
+					.whereNull(coluna.removidoEm);
+				validacao.existeOuErro(
+					verificarModuloExiste,
+					notificacao.moduloNaoEncontrado
+				);
+			}
 
 			app.db(tabela.modulos)
 				.insert(modulo)
@@ -20,37 +31,33 @@ module.exports = (app) => {
 
 	const atualizar = async (req, res) => {
 		try {
-			const modulo = {
-				id: req.params.id,
-				nome: req.body.nome,
-				idTela: req.body.idTela,
-			};
-			validacao.numeroOuErro(modulo.id, validacao.idInvalido);
+			const modulo = { ...req.body };
+			modulo.id = req.params.id;
+			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
 
 			const verificarNoBanco = await app
 				.db(tabela.modulos)
 				.where({ id: modulo.id });
-			validacao.existeOuErro(
-				verificarNoBanco,
-				notificacao.moduloNaoEncontrado
-			);
+			validacao.existeOuErro(verificarNoBanco, "erro");
 
 			// SEM USO
-			// const verificarVinculoComAlgumaTela = await app
-			// 	.db(tabela.telas)
-			// 	.where({ idModulo: modulo.id });
+			const verificarVinculoComTelas = await app
+				.db(tabela.modulos)
+				.where({ maeId: modulo.id });
 
-			// validacao.existeOuErro(
-			// 	verificarVinculoComAlgumaTela,
-			// 	'Este módulo possui uma tela vinculada!'
-			// );
+			validacao.naoExisteOuErro(
+				verificarVinculoComTelas,
+				notificacao.moduloPossuiSubModulos
+			);
 
 			modulo.alteradoEm = new Date();
-			app.db(tabela.modulos)
+			const alterado = await app
+				.db(tabela.modulos)
 				.update(modulo)
-				.where({ id: modulo.id })
-				.then((_) => res.status(204).send())
-				.catch((erro) => res.status(500).send(erro));
+				.where({ id: modulo.id });
+			validacao.existeOuErro(alterado, notificacao.moduloAlterado);
+
+			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);
 		}
@@ -58,6 +65,7 @@ module.exports = (app) => {
 
 	const obter = (req, res) => {
 		app.db(tabela.modulos)
+			.select(coluna.id, coluna.nome, coluna.maeId)
 			.whereNull(coluna.removidoEm)
 			.then((modulos) => res.json(comCaminho(modulos)))
 			.catch((erro) => res.status(500).send(erro));
@@ -67,6 +75,7 @@ module.exports = (app) => {
 		try {
 			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
 			app.db(tabela.modulos)
+				.select(coluna.id, coluna.nome, coluna.maeId)
 				.where({ id: req.params.id })
 				.whereNull(coluna.removidoEm)
 				.then((modulo) => res.json(comCaminho(modulo)))
@@ -77,18 +86,18 @@ module.exports = (app) => {
 	};
 
 	const comCaminho = (modulos) => {
-		const obterTela = (modulos, idTela) => {
-			const tela = modulos.filter((tela) => tela.id === idTela);
-			return tela.length ? tela[0] : null;
+		const obterMae = (modulos, maeId) => {
+			const mae = modulos.filter((mae) => mae.id === maeId);
+			return mae.length ? mae[0] : null;
 		};
 
 		const modulosComCaminho = modulos.map((modulo) => {
 			let caminho = modulo.nome;
-			let tela = obterTela(modulos, modulo.idTela);
+			let mae = obterMae(modulos, modulo.maeId);
 
-			while (tela) {
-				caminho = `${tela.nome} >> ${caminho}`;
-				tela = obterTela(modulos, tela.idTela);
+			while (mae) {
+				caminho = `${mae.nome} >> ${caminho}`;
+				mae = obterMae(modulos, mae.maeId);
 			}
 			return { ...modulo, caminho };
 		});
@@ -104,22 +113,35 @@ module.exports = (app) => {
 
 	const remover = async (req, res) => {
 		try {
-			const modulo = { ...req.params };
+			const modulo = {
+				id: req.params.id,
+			};
 			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
 
 			const verificarSeExisteModulo = await app
 				.db(tabela.modulos)
 				.where({ id: modulo.id })
-				.first();
+				.whereNull(coluna.removidoEm);
 
 			validacao.existeOuErro(
 				verificarSeExisteModulo,
 				notificacao.moduloNaoEncontrado
 			);
 
+			const verificarSubModulos = await app
+				.db(tabela.modulos)
+				.where({ maeId: modulo.id })
+				.whereNull(coluna.removidoEm);
+
+			validacao.naoExisteOuErro(
+				verificarSubModulos,
+				notificacao.moduloPossuiSubModulos
+			);
+
 			const verificarTelaVinculada = await app
 				.db(tabela.telas)
-				.where({ idModulo: modulo.id });
+				.where({ idModulo: modulo.id })
+				.whereNull(coluna.removidoEm);
 
 			validacao.naoExisteOuErro(
 				verificarTelaVinculada,
@@ -166,18 +188,20 @@ module.exports = (app) => {
 	};
 
 	const paraArvore = (modulos, arvore) => {
-		if (!arvore) arvore = modulos.filter((modulo) => !modulo.idTela);
-		arvore = arvore.map((tela) => {
-			const seForFilhe = (nó) => nó.idTela == tela.id;
-			tela.children = paraArvore(modulos, modulos.filter(seForFilhe));
-			return tela;
+		if (!arvore) arvore = modulos.filter((modulo) => !modulo.maeId);
+		arvore = arvore.map((mae) => {
+			const seForFilhe = (no) => no.maeId == mae.id;
+			mae.children = paraArvore(modulos, modulos.filter(seForFilhe));
+			return mae;
 		});
 		return arvore;
 	};
 
 	const obterArvore = (req, res) => {
 		app.db(tabela.modulos)
-			.then((modulos) => modulos.json(modulos))
+			.select(coluna.id, coluna.nome, coluna.maeId)
+			.whereNull(coluna.removidoEm)
+			.then((modulos) => res.json(paraArvore(modulos)))
 			.catch((erro) => res.status(500).send(erro));
 	};
 

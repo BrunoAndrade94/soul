@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+
 mongoose
-	.connect("mongodb://localhost/estatisticas", {
+	.connect(`mongodb://192.168.252.47:3033/estatisticas`, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
 	})

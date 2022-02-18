@@ -8,23 +8,30 @@
 			<i class="fa fa-angle-down"></i>
 		</div>
 		<div class="menu-usuario-conteudo">
-			<router-link to="/admin"
+			<router-link to="/admin" v-if="usuario.admin"
 				><i class="fa fa-cogs"></i> Administração</router-link
 			>
-			<router-link to="/signup"
-				><i class="fa fa-sign-out"></i> Sair</router-link
-			>
+
+			<a href @click.prevent="deslogar"><i class="fa fa-sign-out"></i> Sair</a>
 		</div>
 	</div>
 </template>
 
 <script>
+	import { chaveUsuario } from "@/global";
 	import { mapState } from "vuex";
 	import Gravatar from "vue-gravatar";
 	export default {
 		nome: "MenuUsuario",
 		components: { Gravatar },
 		computed: mapState(["usuario"]),
+		methods: {
+			deslogar() {
+				localStorage.removeItem(chaveUsuario);
+				this.$store.commit("definirUsuario", null);
+				this.$router.push({ path: "/logar" });
+			},
+		},
 	};
 </script>
 

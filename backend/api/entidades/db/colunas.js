@@ -2,21 +2,22 @@
 
 module.exports = () => {
 	// colunas padrões nas tabelas
-	const id = 'id';
-	const nome = 'nome';
-	const removidoEm = 'removidoEm';
-	const alteradoEm = 'alteradoEm';
+	const id = "id";
+	const nome = "nome";
+	const removidoEm = "removidoEm";
+	const alteradoEm = "alteradoEm";
 
 	// colunas tabela usuários
-	const usuario = 'usuario';
-	const email = 'email';
-	const senha = 'senha';
-	const admin = 'admin';
+	const usuario = "usuario";
+	const email = "email";
+	const senha = "senha";
+	const admin = "admin";
 
 	// colunas tabela produtos
-	const idUnidade = 'idUnidade';
-	const idClasse = 'idClasse';
-	const idTela = 'idTela';
+	const idUnidade = "idUnidade";
+	const idClasse = "idClasse";
+	const idTela = "idTela";
+	const maeId = "maeId";
 
 	return {
 		id,
@@ -27,5 +28,6 @@ module.exports = () => {
 		email,
 		senha,
 		admin,
+		maeId,
 	};
 };

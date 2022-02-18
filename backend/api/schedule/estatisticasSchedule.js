@@ -4,7 +4,7 @@
 // 	schedule.scheduleJob("*/1 * * * *", async () => {
 // 		const totalUsuarios = await app.db("usuarios").count("id").first();
 // 		const totalProdutos = await app.db("produtos").count("id").first();
-// 		const totalmodulos = await app.db("modulos").count("id").first();
+// 		const totalModulos = await app.db("modulos").count("id").first();
 
 // 		const { Estatistica } = app.api.relatorios.proprios.estatisticas;
 
@@ -17,7 +17,7 @@
 // 		const estatistica = new Estatistica({
 // 			usuarios: totalUsuarios.count,
 // 			produtos: totalProdutos.count,
-// 			modulos: totalmodulos.count,
+// 			modulos: totalModulos.count,
 // 			criadoEm: new Date(),
 // 		});
 

@@ -1,5 +1,5 @@
 // criptografar senha
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require("bcrypt-nodejs");
 
 module.exports = (app) => {
 	const notificacao = app.api.config.notificacoes;

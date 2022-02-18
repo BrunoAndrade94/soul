@@ -22,8 +22,10 @@ module.exports = (app) => {
 	const emailNaoInformado = "E-mail não informado!";
 	const emailJaCadastrado = "E-mail já cadastrado!";
 
+	const moduloAlterado = "Módulo alterado com sucesso!";
 	const moduloNaoEncontrado = "Módulo não encontrado!";
 	const moduloPossuiTelas = "Módulo possuí telas vinculadas!";
+	const moduloPossuiSubModulos = "Módulo possuí módulos vinculados!";
 
 	const nomeNaoInformado = "Nome não informado!";
 	const senhaNaoInformada = "Senha não informada!";
@@ -53,5 +55,7 @@ module.exports = (app) => {
 		unidadePossuiProduto,
 		moduloNaoEncontrado,
 		moduloPossuiTelas,
+		moduloPossuiSubModulos,
+		moduloAlterado,
 	};
 };

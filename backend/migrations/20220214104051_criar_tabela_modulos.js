@@ -3,7 +3,7 @@ exports.up = function (knex, Promise) {
 		tabela.increments("id").primary();
 		tabela.string("nome").notNull();
 		tabela.binary("descricao", 1000);
-		tabela.integer("idTela").references("id").inTable("telas");
+		tabela.integer("maeId").references("id").inTable("modulos");
 		tabela.timestamp("removidoEm");
 		tabela.timestamp("alteradoEm");
 	});

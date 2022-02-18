@@ -5,6 +5,7 @@ import App from "./App";
 
 import "./config/bootstrap";
 import "./config/mensagens";
+import "./config/axios";
 import store from "./config/store";
 import rotas from "./config/routes/rotas";
 

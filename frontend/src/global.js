@@ -1,8 +1,8 @@
 import Vue from "vue";
 
 export const chaveUsuario = "__dbamv";
-export const baseApi = "http://localhost:3033/";
-// export const baseApi = "https://0.0.0.0/";
+// export const baseApi = "http://localhost:3033/";
+export const baseApi = "http://192.168.252.47:3033/";
 
 export function mostrarErro(erro) {
 	if (erro && erro.response && erro.response.data) {
