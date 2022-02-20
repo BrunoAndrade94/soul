@@ -67,6 +67,9 @@ module.exports = (app) => {
 				validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
 				especie.id = req.params.id;
 			}
+
+			validacao.existeOuErro(especie.nome, validacao.nomeNaoInformado);
+
 			app.db(tabela.especies)
 				.select(coluna.id, coluna.nome)
 				.where(coluna.nome, "like", especie.nome ? especie.nome : null)
