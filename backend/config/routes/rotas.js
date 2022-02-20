@@ -22,6 +22,9 @@ module.exports = (app) => {
 		.get(app.api.entidades.usuario.obterPorId)
 		.delete(admin(app.api.entidades.usuario.remover));
 
+	// ROTAS DE PRODUTOS
+	app.route("/produtos").post(app.api.entidades.produto.incluir);
+
 	// ROTAS DE CLASSES
 	app.route("/classes")
 		.all(app.config.admin.passaporte.autenticar())

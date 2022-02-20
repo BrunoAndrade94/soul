@@ -39,7 +39,7 @@
 								<b-form-group label="E-mail:" label-for="usuario-email">
 									<b-form-input
 										id="usuario-email"
-										type="text"
+										type="email"
 										v-model="usuario.email"
 										required
 										placeholder="Informe o e-mail..."
@@ -82,9 +82,10 @@
 							</b-col>
 						</b-row>
 						<hr />
-						<b-button variant="primary" @click="atualizar"
-							><i class="fa-solid fa-highlighter" /> Atualizar</b-button
-						>
+						<b-button class="atualizar" variant="primary" @click="atualizar">
+							<Botao icone="fa-solid fa-highlighter" titulo="Atualizar" />
+							<!-- <i class="fa-solid fa-highlighter" /> Atualizar -->
+						</b-button>
 					</b-form>
 				</b-tab>
 			</b-tabs>
@@ -97,9 +98,10 @@
 	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import { mapState } from "vuex";
 	import TituloPagina from "../TituloPagina.vue";
+	import Botao from "../Botao.vue";
 	export default {
 		nome: "Usuarios",
-		components: { TituloPagina },
+		components: { TituloPagina, Botao },
 		computed: mapState(["usuario"]),
 		data: function () {
 			return {

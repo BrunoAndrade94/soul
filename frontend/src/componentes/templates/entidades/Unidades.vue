@@ -1,11 +1,11 @@
 <template>
-	<div class="produtos">
+	<div class="unidades">
 		<TituloPagina
-			icone="fa-solid fa-dolly"
-			titulo="Produtos"
-			sub="Aqui pode alterar as informações dos produtos"
+			icone="fa-solid fa-apple-whole"
+			titulo="Unidade"
+			sub="Aqui pode alterar as informações das unidades"
 		/>
-		<div class="botao-crud">
+		<div class="butao-crud">
 			<b-button class="mr-1" variant="success" @click="procurar">
 				<i class="fa-solid fa-magnifying-glass" />
 			</b-button>
@@ -23,53 +23,17 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="produto-id">
-						<b-form-input id="produto-id" type="number" min="0" />
-						<!-- v-model="produto.id" -->
+					<b-form-group label="Código" label-for="unidade-idUnidadew">
+						<b-form-input id="unidade-idUnidade" type="number"></b-form-input>
 					</b-form-group>
 				</b-col>
 				<b-col md="4" sm="10">
-					<b-form-group label="Produto" label-for="produto-nome">
+					<b-form-group label="Descrição" label-for="especie-nome">
 						<b-form-input
-							id="produto-nome"
+							id="especie-nome"
 							type="text"
-							placeholder="Informe o nome do produto..."
-						/>
-						<!-- v-model="produto.nome" -->
-					</b-form-group>
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="produto-id">
-						<b-form-input id="produto-id" type="number" min="0" />
-						<!-- v-model="produto.id" -->
-					</b-form-group>
-				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Espécie" label-for="produto-especie">
-						<b-form-input
-							id="produto-especie"
-							type="text"
-							placeholder="Informe a espécie do produto..."
-						/>
-					</b-form-group>
-				</b-col>
-			</b-row>
-			<b-row>
-				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="produto-id">
-						<b-form-input id="produto-id" type="number" min="0" />
-						<!-- v-model="produto.id" -->
-					</b-form-group>
-				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Unidade" label-for="produto-unidade">
-						<b-form-input
-							id="produto-unidade"
-							type="text"
-							placeholder="Informe a unidade do produto..."
-						/>
+							placeholder="Informe a unidade..."
+						></b-form-input>
 					</b-form-group>
 				</b-col>
 			</b-row>
@@ -84,13 +48,13 @@
 	import TituloPagina from "../TituloPagina.vue";
 	import BotaoCrud from "../BotaoCrud.vue";
 	export default {
-		nome: "Produtos",
+		nome: "Unidades",
 		components: { TituloPagina, BotaoCrud },
-		computed: mapState(["produtos"]),
+		computed: mapState(["unidaes"]),
 		data: function () {
 			return {
-				produto: {},
-				produtos: [],
+				unidade: {},
+				unidades: [],
 				campos: [
 					{
 						key: "id",
@@ -109,20 +73,20 @@
 			};
 		},
 		methods: {
-			carregarProduto(produto) {
-				this.produto = { ...produto };
+			carregarUnidade(unidade) {
+				this.unidade = { ...unidade };
 			},
-			carregarProdutos() {
-				axios.get(`${baseApi}produtos`).then((produtos) => {
-					this.produtos = produtos.data;
+			carregarUnidades() {
+				axios.get(`${baseApi}unidades`).then((unidades) => {
+					this.unidades = unidades.data;
 				});
 			},
 			limpar() {
-				this.produto = {};
+				this.unidade = {};
 			},
 			incluir() {
 				axios
-					.post(`${baseApi}produtos`, this.produto)
+					.post(`${baseApi}unidades`, this.unidade)
 					.then(() => {
 						mostrarSucesso("Incluído com sucesso!");
 					})

@@ -18,7 +18,7 @@
 					<b-form-group label="E-mail:" label-for="usuario.email">
 						<b-form-input
 							id="usuario-email"
-							type="text"
+							type="email"
 							v-model="usuario.email"
 							required
 							placeholder="Informe o e-mail..."
@@ -150,6 +150,7 @@
 						key: "admin",
 						label: "Adm",
 						sortable: true,
+						class: "d-none d-sm-block",
 						formatter: (valor) => (valor ? "Sim" : "Não"),
 					},
 					{ key: "acoes", label: "Opções" },

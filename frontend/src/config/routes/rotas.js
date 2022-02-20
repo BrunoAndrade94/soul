@@ -6,7 +6,7 @@ import Home from "../../componentes/home/Home";
 import Autenticar from "../../componentes/auth/Autenticar";
 import PaginasAdmin from "../../componentes/templates/admin/PaginasAdmin";
 import Usuarios from "../../componentes/templates/config/Usuarios";
-import Produtos from "../../componentes/templates/entidades/Produtos";
+import PaginasProduto from "../../componentes/templates/entidades/PaginasProduto";
 
 Vue.use(VueRouter);
 
@@ -35,7 +35,7 @@ const rotas = [
 	{
 		name: "produtos",
 		path: "/produtos",
-		component: Produtos,
+		component: PaginasProduto,
 	},
 ];
 
