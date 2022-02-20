@@ -1,31 +1,34 @@
 <template>
 	<header class="cabecalho">
 		<a class="toggle" @click="toggleMenu" v-if="!esconderToggle">
-			<i class="fa fa-lg" :class="icone"></i>
+			<i class="fa-solid fa-bars"></i>
 		</a>
 		<h1 class="titulo">
-			<!-- <router-link to="/"> -->
-			{{ titulo }}
-			<!-- </router-link> -->
+			<i class="fa-solid fa-solar-panel" />
+			<router-link to="/">
+				<span v-if="usuario">
+					{{ titulo }}
+				</span>
+			</router-link>
+			<span v-if="!usuario">
+				{{ titulo }}
+			</span>
 		</h1>
 		<MenuUsuario v-if="!esconderMenuUsuario" />
 	</header>
 </template>
 
 <script>
+	import { mapState } from "vuex";
 	import MenuUsuario from "./menu/MenuUsuario";
 	export default {
 		name: "Cabecalho",
 		components: { MenuUsuario },
+		computed: mapState(["usuario"]),
 		props: {
 			titulo: String,
 			esconderToggle: Boolean,
 			esconderMenuUsuario: Boolean,
-		},
-		computed: {
-			icone() {
-				return this.$store.state.menuVisivel ? "fa-angle-left" : "fa-angle-down";
-			},
 		},
 		methods: {
 			toggleMenu() {
@@ -43,16 +46,19 @@
 
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: flex;
 	}
 
 	.titulo {
-		font-size: 1.9rem;
-		color: antiquewhite;
+		font-size: 1.5rem;
+		color: rgb(255, 255, 255);
 		font-weight: 100;
 		flex-grow: 1;
 		text-align: left;
-		padding: 20px;
+		padding: 10px;
+		margin-top: 0.2rem;
+		padding-left: 1rem;
+		flex-wrap: flex;
 	}
 
 	.titulo a {
@@ -79,5 +85,9 @@
 	header.cabecalho > a.toggle:hover {
 		color: white;
 		background-color: rgba(0, 0, 0, 0.2);
+	}
+	.titulo i {
+		font-size: 30px;
+		padding: 4px 10px 0px 0px;
 	}
 </style>

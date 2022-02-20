@@ -3,6 +3,7 @@ import Toasted from "vue-toasted";
 
 Vue.use(Toasted, {
 	iconPack: "fontawesome",
+	position: "top-center",
 	duration: 3000,
 });
 
@@ -14,7 +15,6 @@ Vue.toasted.register(
 
 Vue.toasted.register(
 	"erroPadrao",
-	(msg) => (!msg.msg ? "Ops.. erro inesperado!" : msg.msg),
-	// "erro inesperado!",
+	(msg) => (!msg.msg ? "Ops... erro inesperado!" : msg.msg),
 	{ type: "error", icon: "times" }
 );

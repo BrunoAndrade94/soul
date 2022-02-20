@@ -1,6 +1,9 @@
 <template>
 	<footer class="rodape">
-		<span>Desenvolvido com <strong>s2</strong> por Bruno Andrade</span>
+		<span
+			>Desenvolvido com <strong> <i class="fa-solid fa-heart" /> </strong> por
+			Bruno Andrade</span
+		>
 	</footer>
 </template>
 
@@ -16,9 +19,13 @@
 		background-color: #ddd;
 		color: #333;
 
+		align-content: center;
 		display: flex;
 		align-items: center;
-		justify-content: flex-end;
-		padding-right: 10px;
+		justify-content: right;
+		padding-right: 23px;
+	}
+	.rodape i {
+		color: red;
 	}
 </style>

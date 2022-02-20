@@ -15,11 +15,12 @@ module.exports = (app) => {
 		.post(admin(app.api.entidades.usuario.incluir))
 		.get(app.api.entidades.usuario.obter);
 
+	app.route("/usuario/:id").put(app.api.entidades.usuario.atualizar);
+
 	app.route("/usuarios/:id")
 		.all(app.config.admin.passaporte.autenticar())
 		.get(app.api.entidades.usuario.obterPorId)
-		.delete(admin(app.api.entidades.usuario.remover))
-		.put(admin(app.api.entidades.usuario.atualizar));
+		.delete(admin(app.api.entidades.usuario.remover));
 
 	// ROTAS DE CLASSES
 	app.route("/classes")

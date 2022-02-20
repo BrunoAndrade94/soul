@@ -1,7 +1,7 @@
 <template>
 	<div class="home">
 		<TituloPagina
-			icone="fa fa-home"
+			icone="fa-solid fa-house-chimney-crack"
 			titulo=" Boas-Vindas!"
 			sub=" Resolvendo seus problemas!"
 		/>
@@ -36,7 +36,7 @@
 	export default {
 		nome: "Home",
 		components: { TituloPagina, Estatistica },
-		data: () => {
+		data: function () {
 			return {
 				estatistica: {},
 			};

@@ -4,8 +4,8 @@ exports.up = function (knex, Promise) {
 	return knex.schema.createTable("usuarios", (tabela) => {
 		tabela.increments("id").primary();
 		tabela.string("nome").notNull();
-		tabela.string("usuario").notNull().unique();
-		tabela.string("email").notNull().unique();
+		tabela.string("usuario").notNull();
+		tabela.string("email").notNull();
 		tabela.string("senha").notNull();
 		tabela.boolean("admin").defaultTo(false).notNull();
 		tabela.timestamp("removidoEm");

@@ -1,5 +1,5 @@
 module.exports = (app) => {
-	const atencao = "**** ATENÇÃO **** ";
+	const atencao = "**** ATENÇÃO **** \n";
 
 	// notificações de ID
 	const idInvalido = "Informe um ID válido!";

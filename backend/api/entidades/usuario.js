@@ -41,25 +41,26 @@ module.exports = (app) => {
 				notificacao.senhasNaoConferem
 			);
 
-			// consultar se existe cadastro de usuário ou email
-			const verificarNomeDeUsuario = await app
-				.db(tabela.usuarios)
-				.where({ usuario: usuario.usuario })
-				.whereNull(coluna.removidoEm)
-				.first();
+			// // consultar se existe cadastro de usuário ou email
+
 			const verificarEmailDeUsuario = await app
 				.db(tabela.usuarios)
 				.where({ email: usuario.email })
-				.whereNull(coluna.removidoEm)
-				.first();
+				.whereNull(coluna.removidoEm);
 
-			validacao.naoExisteOuErro(
-				verificarNomeDeUsuario,
-				notificacao.usuarioJaCadastrado
-			);
 			validacao.naoExisteOuErro(
 				verificarEmailDeUsuario,
 				notificacao.emailJaCadastrado
+			);
+
+			const verificarUsuarioDeUsuario = await app
+				.db(tabela.usuarios)
+				.where({ usuario: usuario.usuario })
+				.whereNull(coluna.removidoEm);
+
+			validacao.naoExisteOuErro(
+				verificarUsuarioDeUsuario,
+				notificacao.usuarioJaCadastrado
 			);
 
 			// criptografar a senha antes de persistir
@@ -84,19 +85,22 @@ module.exports = (app) => {
 
 			const verificarIdDoUsuario = await app
 				.db(tabela.usuarios)
-				.where({ id: usuario.id })
-				.whereNull(coluna.removidoEm)
-				.first();
+				.where({ id: usuario.id });
+
 			validacao.existeOuErro(
 				verificarIdDoUsuario,
 				notificacao.usuarioNaoEncontrado
 			);
 
+			if (usuario.usuario) {
+				usuario.senha = criptografarSenha(usuario.senha);
+				delete usuario.confirmacaoSenha;
+			}
+
 			usuario.alteradoEm = new Date();
 			app.db(tabela.usuarios)
 				.update(usuario)
 				.where({ id: usuario.id })
-				.whereNull(coluna.removidoEm)
 				.then((_) => res.status(204).send())
 				.catch((erro) => res.status(500).send(erro));
 		} catch (erro) {

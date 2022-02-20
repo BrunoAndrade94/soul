@@ -11,9 +11,6 @@
 					<b-tab title="Usuários" active>
 						<UsuariosAdmin />
 					</b-tab>
-					<b-tab title="Produtos">
-						<h1>Produtos</h1>
-					</b-tab>
 					<b-tab title="Módulos">
 						<h1>Módulos</h1>
 					</b-tab>
@@ -29,9 +26,11 @@
 <script>
 	import TituloPagina from "../TituloPagina.vue";
 	import UsuariosAdmin from "../admin/UsuariosAdmin.vue";
+	import { mapState } from "vuex";
 	export default {
 		nome: "PaginasAdmin",
 		components: { TituloPagina, UsuariosAdmin },
+		computed: mapState(["usuario"]),
 	};
 </script>
 

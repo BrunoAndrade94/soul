@@ -1,12 +1,12 @@
 <template>
 	<div id="app" :class="{ 'esconder-menu': menuVisivel || !usuario }">
 		<Cabecalho
-			titulo="MV Souluções"
+			titulo="SOULuções MV"
 			:esconderToggle="!usuario"
 			:esconderMenuUsuario="!usuario"
 		/>
 		<Menu v-if="usuario" />
-		<!-- <Loading v-if="validandoToken" /> -->
+		<Loading v-if="validandoToken" />
 		<Conteudo v-else />
 		<Rodape />
 	</div>
@@ -56,7 +56,7 @@
 					this.$store.commit("definirUsuario", dadosUsuario);
 				} else {
 					localStorage.removeItem(chaveUsuario);
-					this.$router.push({ path: "logar" });
+					return this.$router.push({ path: "logar" });
 				}
 				this.validandoToken = false;
 			},
@@ -86,7 +86,7 @@
 		grid-template-areas:
 			"header header"
 			"menu content"
-			"menu footer";
+			"footer footer";
 	}
 
 	#app.esconder-menu {

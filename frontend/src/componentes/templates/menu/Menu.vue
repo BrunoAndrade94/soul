@@ -50,7 +50,7 @@
 <style>
 	.menu {
 		grid-area: menu;
-		background: linear-gradient(to right, #232526, #414345);
+		background: linear-gradient(to right, #3c4641, #526c86);
 
 		display: flex;
 		flex-direction: column;

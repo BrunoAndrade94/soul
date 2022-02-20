@@ -5,6 +5,8 @@ import { chaveUsuario } from "@/global";
 import Home from "../../componentes/home/Home";
 import Autenticar from "../../componentes/auth/Autenticar";
 import PaginasAdmin from "../../componentes/templates/admin/PaginasAdmin";
+import Usuarios from "../../componentes/templates/config/Usuarios";
+import Produtos from "../../componentes/templates/entidades/Produtos";
 
 Vue.use(VueRouter);
 
@@ -24,6 +26,16 @@ const rotas = [
 		name: "autenticar",
 		path: "/logar",
 		component: Autenticar,
+	},
+	{
+		name: "configUsuario",
+		path: "/configUsuario",
+		component: Usuarios,
+	},
+	{
+		name: "produtos",
+		path: "/produtos",
+		component: Produtos,
 	},
 ];
 

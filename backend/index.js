@@ -1,5 +1,7 @@
 const porta = 3033;
-const ip = "192.168.252.47";
+// IP REDE LOCAL DANTE
+// const ip = "192.168.252.47";
+const ip = "10.10.0.254";
 const app = require("express")();
 const consign = require("consign");
 const bancoDeDados = require("./config/db/bancoDeDados");

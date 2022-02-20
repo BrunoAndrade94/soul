@@ -4,7 +4,7 @@
 			<img src="@/assets/marca_MV.png" width="200" alt="Logo" />
 			<hr />
 			<div class="autenticar-titulo">
-				{{ mostrarLogin ? "Cadastro" : "Login" }}
+				{{ mostrarLogin ? "Registrar" : "Login" }}
 			</div>
 
 			<input
@@ -28,11 +28,19 @@
 				placeholder="Confirmação de Senha"
 			/>
 
-			<button v-if="mostrarLogin" @click="cadastro">Registrar</button>
-			<button v-else @click="login">Entrar</button>
+			<button
+				v-if="mostrarLogin"
+				v-show="(this.usuario = {})"
+				@click="cadastro"
+			>
+				<i class="fa-solid fa-pencil" /> Registrar
+			</button>
+			<button v-else @click="login" v-show="(this.usuario = {})">
+				<i class="fa-solid fa-door-open" /> Entrar
+			</button>
 			<hr />
 			<a href @click.prevent="mostrarLogin = !mostrarLogin">
-				<span v-if="mostrarLogin">Acesso o Login!</span>
+				<span v-if="mostrarLogin">Acesse o Login!</span>
 				<span v-else>Registre-se aqui!</span>
 			</a>
 		</div>
@@ -40,7 +48,7 @@
 </template>
 
 <script>
-	import { baseApi, chaveUsuario, mostrarErro } from "@/global";
+	import { baseApi, chaveUsuario, mostrarErro, mostrarSucesso } from "@/global";
 	import axios from "axios";
 	export default {
 		nome: "Autenticar",
@@ -58,6 +66,7 @@
 					.then((res) => {
 						this.$store.commit("definirUsuario", res.data);
 						localStorage.setItem(chaveUsuario, JSON.stringify(res.data));
+						mostrarSucesso(`Boas-vindas ${this.usuario.usuario}`);
 						this.$router.push({ path: "/" });
 					})
 					.catch(mostrarErro);
@@ -66,7 +75,9 @@
 				axios
 					.post(`${baseApi}cadastro`, this.usuario)
 					.then(() => {
-						this.$toasted.global.sucessoPadrao();
+						mostrarSucesso(
+							`Cadastro realizado com sucesso, ${this.usuario.nome}`
+						);
 						this.usuario = {};
 						this.mostrarLogin = false;
 					})

@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt-nodejs");
 module.exports = (app) => {
 	const notificacao = app.api.config.notificacoes;
 	const validacao = app.api.config.validacoes;
+	const coluna = app.api.entidades.db.colunas;
 
 	const logar = async (req, res) => {
 		try {
@@ -20,12 +21,13 @@ module.exports = (app) => {
 			const usuario = await app
 				.db("usuarios")
 				.where({ usuario: req.body.usuario })
+				.whereNull(coluna.removidoEm)
 				.first();
 			validacao.existeOuErro(usuario, notificacao.usuarioNaoEncontrado);
 
 			const deuCerto = bcrypt.compareSync(req.body.senha, usuario.senha);
 			if (!deuCerto) {
-				return res.status(401).send("Usuário ou Senha inválidos!");
+				return res.status(400).send("Usuário ou Senha inválidos!");
 			}
 
 			const agora = Math.floor(Date.now() / 1000);
@@ -37,8 +39,8 @@ module.exports = (app) => {
 				email: usuario.email,
 				admin: usuario.admin,
 				iat: agora,
-				exp: agora + 10,
-				// exp: agora + 60 * 60 * 42 * 3,
+				//exp: agora + 10,
+				exp: agora + 60 * 60 * 42 * 3,
 			};
 
 			res.json({
@@ -52,7 +54,6 @@ module.exports = (app) => {
 
 	const validarToken = async (req, res) => {
 		const dadosUsuario = req.body || null;
-
 		try {
 			if (dadosUsuario) {
 				const token = jwt.decode(dadosUsuario.token, authSecret);
@@ -65,6 +66,5 @@ module.exports = (app) => {
 		}
 		return res.send(false);
 	};
-
 	return { logar, validarToken };
 };

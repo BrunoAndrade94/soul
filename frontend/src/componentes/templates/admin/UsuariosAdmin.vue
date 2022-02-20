@@ -46,9 +46,15 @@
 				>
 					Administração
 				</b-form-checkbox>
+				<b-form-checkbox
+					v-model="alterar"
+					v-show="modo === 'atualizar'"
+					class="mt-4 mb-4 ml-4"
+				>
+					Alterar Senha
+				</b-form-checkbox>
 			</b-row>
-
-			<b-row>
+			<b-row v-show="alterar || (modo === 'incluir' && !alterar)">
 				<b-col md="6" sm="12">
 					<b-form-group label="Senha:" label-for="usuario.senha">
 						<b-form-input
@@ -75,29 +81,39 @@
 					</b-form-group>
 				</b-col>
 			</b-row>
+			<hr />
 			<b-button variant="primary" v-if="modo === 'incluir'" @click="incluir">
-				Incluir
+				<i class="fa-solid fa-pen" /> Incluir
+			</b-button>
+			<b-button
+				variant="warning"
+				v-if="modo === 'atualizar'"
+				@click="atualizar"
+			>
+				<i class="fa-solid fa-highlighter" /> Atualizar
 			</b-button>
 			<b-button variant="danger" v-if="modo === 'remover'" @click="remover">
-				Excluir
+				<i class="fa-solid fa-user-slash" /> Excluir
 			</b-button>
-			<b-button class="ml-2" @click="limpar">Cancelar</b-button>
+			<b-button variant="danger" class="ml-2" @click="limpar('incluir')"
+				><i class="fa-solid fa-xmark" /> Cancelar</b-button
+			>
 		</b-form>
 		<hr />
 		<b-table hover striped :items="usuarios" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="warning"
-					@click="carregarUsuario(data.item)"
+					@click="carregarUsuario(data.item, 'atualizar')"
 					class="mr-2"
 				>
-					<i class="fa fa-pencil"></i>
+					<i class="fa-solid fa-pen-to-square"></i>
 				</b-button>
 				<b-button
 					variant="danger"
 					@click="carregarUsuario(data.item, 'remover')"
 				>
-					<i class="fa fa-trash"></i>
+					<i class="fa-solid fa-trash-can"></i>
 				</b-button>
 			</template>
 		</b-table>
@@ -105,27 +121,38 @@
 </template>
 
 <script>
-	import { baseApi, mostrarErro } from "@/global";
+	import { mapState } from "vuex";
+	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import axios from "axios";
 	export default {
 		nome: "UsuariosAdmin",
-		data: () => {
+		computed: mapState(["usuario"]),
+		data: function () {
 			return {
 				modo: "incluir",
+				alterar: false,
 				usuario: {},
 				usuarios: [],
 				campos: [
-					{ key: "id", label: "Código", sortable: true },
-					{ key: "nome", label: "Nome", sortable: true },
-					{ key: "email", label: "E-mail", sortable: true },
+					{
+						key: "nome",
+						label: "Nome",
+						sortable: true,
+					},
+					{
+						key: "email",
+						label: "E-mail",
+						sortable: true,
+						class: "d-none d-sm-block",
+					},
 					{ key: "usuario", label: "Usuário", sortable: true },
 					{
 						key: "admin",
-						label: "Administração",
+						label: "Adm",
 						sortable: true,
 						formatter: (valor) => (valor ? "Sim" : "Não"),
 					},
-					{ key: "acoes", label: "Ações" },
+					{ key: "acoes", label: "Opções" },
 				],
 			};
 		},
@@ -135,32 +162,38 @@
 				this.usuario = { ...usuario };
 			},
 			carregarUsuarios() {
-				const url = `${baseApi}usuarios`;
-				axios.get(url).then((res) => {
+				axios.get(`${baseApi}usuarios`).then((res) => {
 					this.usuarios = res.data;
 				});
 			},
-			limpar() {
-				this.modo = "incluir";
+			limpar(modo = "incluir") {
+				this.modo = modo;
 				this.usuario = {};
-				this.carregarUsuarios();
+				this.carregarUsuarios(this.usuario);
 			},
 			incluir() {
-				const metodo = this.usuario.id ? "put" : "post";
-				const id = this.usuario.id ? `${this.usuario.id}` : "";
-				axios[metodo](`${baseApi}usuarios/${id}`, this.usuario)
+				axios
+					.post(`${baseApi}usuarios`, this.usuario)
 					.then(() => {
-						this.$toasted.global.sucessoPadrao();
+						mostrarSucesso("Incluído com sucesso!");
+						this.limpar();
+					})
+					.catch(mostrarErro);
+			},
+			atualizar() {
+				axios
+					.put(`${baseApi}usuario/${this.usuario.id}`, this.usuario)
+					.then(() => {
+						mostrarSucesso("Atualizado com sucesso!");
 						this.limpar();
 					})
 					.catch(mostrarErro);
 			},
 			remover() {
-				const id = this.usuario.id;
 				axios
-					.delete(`${baseApi}usuarios/${id}`)
+					.delete(`${baseApi}usuarios/${this.usuario.id}`)
 					.then(() => {
-						this.$toasted.global.sucessoPadrao();
+						mostrarSucesso(`${this.usuario.nome} excluído com sucesso!`);
 						this.limpar();
 					})
 					.catch(mostrarErro);
