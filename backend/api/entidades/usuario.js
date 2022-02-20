@@ -83,6 +83,8 @@ module.exports = (app) => {
 			const usuario = { ...req.body };
 			usuario.id = req.params.id;
 
+			console.log({ ...req.body });
+
 			const verificarIdDoUsuario = await app
 				.db(tabela.usuarios)
 				.where({ id: usuario.id });
@@ -95,6 +97,10 @@ module.exports = (app) => {
 			if (usuario.usuario) {
 				usuario.senha = criptografarSenha(usuario.senha);
 				delete usuario.confirmacaoSenha;
+			}
+
+			if (usuario.token) {
+				delete usuario.token, delete usuario.iat, delete usuario.exp;
 			}
 
 			usuario.alteradoEm = new Date();

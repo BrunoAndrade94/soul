@@ -1,5 +1,5 @@
 module.exports = (app) => {
-	const atencao = "**** ATENÇÃO **** \n";
+	const atencao = "**** ATENÇÃO **** ";
 
 	// notificações de ID
 	const idInvalido = "Informe um ID válido!";
@@ -13,6 +13,8 @@ module.exports = (app) => {
 	const classeJaCadastrada = "Classe já cadastrada!";
 	const classeNaoInformada = "Classe não informada!";
 	const classePossuiProduto = "Classe possui produto!";
+
+	const especieJaExiste = "Espécie já existe!";
 
 	const unidadeNaoEncontrada = "Unidade não encontrada!";
 	const unidadeJaCadastrada = "Unidade já cadastrada!";
@@ -57,5 +59,6 @@ module.exports = (app) => {
 		moduloPossuiTelas,
 		moduloPossuiSubModulos,
 		moduloAlterado,
+		especieJaExiste,
 	};
 };

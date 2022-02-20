@@ -25,6 +25,17 @@ module.exports = (app) => {
 	// ROTAS DE PRODUTOS
 	app.route("/produtos").post(app.api.entidades.produto.incluir);
 
+	// ROTAS DE ESPECIES
+	app.route("/especie").get(app.api.entidades.especies.obterPorParametro);
+
+	app.route("/especies")
+		.post(app.api.entidades.especies.incluir)
+		.get(app.api.entidades.especies.obter);
+
+	app.route("/especies/:id")
+		.get(app.api.entidades.especies.obterPorParametro)
+		.put(app.api.entidades.especies.atualizar);
+
 	// ROTAS DE CLASSES
 	app.route("/classes")
 		.all(app.config.admin.passaporte.autenticar())

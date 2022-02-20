@@ -29,4 +29,7 @@
 </script>
 
 <style>
+	.tabs {
+		display: center;
+	}
 </style>

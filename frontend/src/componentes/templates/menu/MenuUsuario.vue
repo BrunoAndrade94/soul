@@ -20,6 +20,7 @@
 				<i class="fa-solid fa-user-gear" />
 				Configurar Usuário
 			</router-link>
+			<hr />
 			<a href @click.prevent="deslogar"
 				><i class="fa-solid fa-person-running" /> Sair</a
 			>
