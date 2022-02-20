@@ -83,8 +83,6 @@ module.exports = (app) => {
 			const usuario = { ...req.body };
 			usuario.id = req.params.id;
 
-			console.log({ ...req.body });
-
 			const verificarIdDoUsuario = await app
 				.db(tabela.usuarios)
 				.where({ id: usuario.id });
