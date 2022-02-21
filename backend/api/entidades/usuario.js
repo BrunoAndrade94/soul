@@ -122,6 +122,7 @@ module.exports = (app) => {
 				.whereNull(coluna.removidoEm);
 
 			validacao.existeOuErro(deletadas, notificacao.usuarioNaoEncontrado);
+
 			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);

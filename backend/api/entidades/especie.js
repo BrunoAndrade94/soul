@@ -9,6 +9,8 @@ module.exports = (app) => {
 			const especie = { ...req.body };
 			validacao.existeOuErro(especie.nome, notificacao.nomeNaoInformado);
 
+			if (especie.id === null) delete especie.id;
+
 			app.db(tabela.especies)
 				.insert(especie)
 				.then((_) => res.status(204).send())
@@ -68,12 +70,12 @@ module.exports = (app) => {
 				especie.id = req.params.id;
 			}
 
-			validacao.existeOuErro(especie.nome, validacao.nomeNaoInformado);
+			validacao.existeOuErro(especie.nome, notificacao.nomeNaoInformado);
 
 			app.db(tabela.especies)
 				.select(coluna.id, coluna.nome)
 				.where(coluna.nome, "like", especie.nome ? especie.nome : null)
-				.orWhere({ id: especie.id ? especie.id : 0 })
+				.orWhere({ id: especie.id })
 				.then((especies) => res.json(especies).send())
 				.catch((erro) => res.status(500).send(erro));
 		} catch (erro) {
@@ -81,5 +83,24 @@ module.exports = (app) => {
 		}
 	};
 
-	return { incluir, atualizar, obter, obterPorParametro };
+	const remover = async (req, res) => {
+		try {
+			const especie = { ...req.body };
+			if (!especie.id) especie.id = req.params.id;
+
+			especie.removidoEm = new Date();
+			const removida = await app
+				.db(tabela.especies)
+				.update(especie)
+				.where({ id: especie.id });
+
+			validacao.existeOuErro(removida, notificacao.especieNaoEncontrada);
+
+			res.status(204).send();
+		} catch (erro) {
+			res.status(400).send();
+		}
+	};
+
+	return { incluir, atualizar, obter, obterPorParametro, remover };
 };

@@ -26,15 +26,16 @@ module.exports = (app) => {
 	app.route("/produtos").post(app.api.entidades.produto.incluir);
 
 	// ROTAS DE ESPECIES
-	app.route("/especie").get(app.api.entidades.especies.obterPorParametro);
+	app.route("/especie").get(app.api.entidades.especie.obterPorParametro);
 
 	app.route("/especies")
-		.post(app.api.entidades.especies.incluir)
-		.get(app.api.entidades.especies.obter);
+		.post(app.api.entidades.especie.incluir)
+		.get(app.api.entidades.especie.obter);
 
 	app.route("/especies/:id")
-		.get(app.api.entidades.especies.obterPorParametro)
-		.put(app.api.entidades.especies.atualizar);
+		.get(app.api.entidades.especie.obterPorParametro)
+		.put(app.api.entidades.especie.atualizar)
+		.delete(app.api.entidades.especie.remover);
 
 	// ROTAS DE CLASSES
 	app.route("/classes")
@@ -50,12 +51,10 @@ module.exports = (app) => {
 
 	// ROTAS UNIDADES
 	app.route("/unidades")
-		.all(app.config.admin.passaporte.autenticar())
 		.post(app.api.entidades.unidade.incluir)
 		.get(app.api.entidades.unidade.obter);
 
 	app.route("/unidades/:id")
-		.all(app.config.admin.passaporte.autenticar())
 		.put(app.api.entidades.unidade.atualizar)
 		.get(app.api.entidades.unidade.obterPorId)
 		.delete(app.api.entidades.unidade.remover);

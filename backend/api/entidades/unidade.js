@@ -23,6 +23,7 @@ module.exports = (app) => {
 
 	const obter = (req, res) => {
 		app.db(tabela.unidades)
+			.select(coluna.id, coluna.nome)
 			.whereNull(coluna.removidoEm)
 			.then((unidades) => res.json(unidades))
 			.catch((erro) => res.status(500).send(erro));
@@ -33,6 +34,7 @@ module.exports = (app) => {
 			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
 
 			app.db(tabela.unidades)
+				.select(coluna.id, coluna.nome)
 				.where({ id: req.params.id })
 				.whereNull(coluna.removidoEm)
 				.then((unidade) => res.json(unidade))

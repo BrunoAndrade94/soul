@@ -16,7 +16,7 @@
 			<input
 				v-if="mostrarLogin"
 				v-model="usuario.email"
-				type="text"
+				type="email"
 				placeholder="E-mail"
 			/>
 			<input v-model="usuario.usuario" type="text" placeholder="Usuário" />

@@ -1,7 +1,7 @@
 <template>
 	<div class="paginas-produto">
 		<div class="tabs">
-			<b-card no-body>
+			<b-card class="card" no-body>
 				<b-tabs card>
 					<b-tab title="Produtos" active>
 						<Produtos />

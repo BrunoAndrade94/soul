@@ -19,7 +19,7 @@
 		background-color: #ddd;
 		color: #333;
 
-		align-content: center;
+		align-content: left;
 		display: flex;
 		align-items: center;
 		justify-content: right;
