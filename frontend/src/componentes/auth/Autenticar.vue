@@ -19,8 +19,18 @@
 				type="email"
 				placeholder="E-mail"
 			/>
-			<input v-model="usuario.usuario" type="text" placeholder="Usuário" />
-			<input v-model="usuario.senha" type="password" placeholder="Senha" />
+			<input
+				@keydown.enter.native="clicou"
+				v-model="usuario.usuario"
+				type="text"
+				placeholder="Usuário"
+			/>
+			<input
+				@keydown.enter.native="clicou"
+				v-model="usuario.senha"
+				type="password"
+				placeholder="Senha"
+			/>
 			<input
 				v-if="mostrarLogin"
 				v-model="usuario.confirmacaoSenha"
@@ -28,16 +38,16 @@
 				placeholder="Confirmação de Senha"
 			/>
 
-			<button
+			<b-button
 				v-if="mostrarLogin"
 				v-show="(this.usuario = {})"
 				@click="cadastro"
 			>
 				<i class="fa-solid fa-pencil" /> Registrar
-			</button>
-			<button v-else @click="login" v-show="(this.usuario = {})">
+			</b-button>
+			<b-button v-else @click="login" v-show="(this.usuario = {})">
 				<i class="fa-solid fa-door-open" /> Entrar
-			</button>
+			</b-button>
 			<hr />
 			<a href @click.prevent="mostrarLogin = !mostrarLogin">
 				<span v-if="mostrarLogin">Acesse o Login!</span>
@@ -59,6 +69,13 @@
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (!this.mostrarLogin) {
+					if (evento.which === 13) {
+						this.login();
+					}
+				}
+			},
 			// responsavel por fazer o login
 			login() {
 				axios

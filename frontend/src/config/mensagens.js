@@ -18,3 +18,10 @@ Vue.toasted.register(
 	(msg) => (!msg.msg ? "Ops... erro inesperado!" : msg.msg),
 	{ type: "error", icon: "times" }
 );
+
+// SEM USO, NAO FUNCIONA
+Vue.toasted.register(
+	"atualizadoComSucesso",
+	(objeto) => `${objeto.msg} atualizado com sucesso!`,
+	{ type: "success", icon: "times" }
+);

@@ -95,7 +95,7 @@
 
 <script>
 	import axios from "axios";
-	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
+	import g from "@/global";
 	import { mapState } from "vuex";
 	import TituloPagina from "../TituloPagina.vue";
 	import Botao from "../Botao.vue";
@@ -111,12 +111,20 @@
 		methods: {
 			atualizar() {
 				axios
-					.put(`${baseApi}usuario/${this.usuario.id}`, this.usuario)
+					.put(`${g.baseApi}usuario/${this.usuario.id}`, this.usuario)
 					.then(() => {
-						mostrarSucesso("Atualizado com sucesso!");
+						g.mostrarSucesso(`${this.usuario.nome} atualizado com sucesso!`);
+						// this.limparSenha();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
+			limparSenha() {
+				this.usuario.senha = "";
+				this.usuario.confirmacaoSenha = "";
+			},
+		},
+		mounted() {
+			this.limparSenha();
 		},
 	};
 </script>

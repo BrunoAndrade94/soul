@@ -12,6 +12,8 @@ module.exports = (app) => {
 				notificacao.unidadeNaoEncontrada
 			);
 
+			if (unidade.id === null) delete unidade.id;
+
 			app.db(tabela.unidades)
 				.insert(unidade)
 				.then((_) => res.status(204).send())

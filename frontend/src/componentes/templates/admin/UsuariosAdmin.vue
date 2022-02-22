@@ -1,5 +1,10 @@
 <template>
 	<div class="usuario-admin">
+		<TituloPagina
+			icone="fa fa-cogs"
+			titulo=" Administração do Sistema"
+			sub=" Cadastro & CIA"
+		/>
 		<b-form>
 			<input id="usuario-id" type="hidden" v-model="usuario.id" />
 			<b-row>
@@ -122,11 +127,13 @@
 
 <script>
 	import { mapState } from "vuex";
-	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
+	import TituloPagina from "../TituloPagina.vue";
+	import g from "@/global";
 	import axios from "axios";
 	export default {
 		nome: "UsuariosAdmin",
 		computed: mapState(["usuario"]),
+		components: { TituloPagina },
 		data: function () {
 			return {
 				modo: "incluir",
@@ -163,7 +170,7 @@
 				this.usuario = { ...usuario };
 			},
 			carregarUsuarios() {
-				axios.get(`${baseApi}usuarios`).then((res) => {
+				axios.get(`${g.baseApi}usuarios`).then((res) => {
 					this.usuarios = res.data;
 				});
 			},
@@ -174,30 +181,30 @@
 			},
 			incluir() {
 				axios
-					.post(`${baseApi}usuarios`, this.usuario)
+					.post(`${g.baseApi}usuarios`, this.usuario)
 					.then(() => {
-						mostrarSucesso("Incluído com sucesso!");
+						g.mostrarSucesso("Incluído com sucesso!");
 						this.limpar();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 			atualizar() {
 				axios
-					.put(`${baseApi}usuario/${this.usuario.id}`, this.usuario)
+					.put(`${g.baseApi}usuario/${this.usuario.id}`, this.usuario)
 					.then(() => {
-						mostrarSucesso("Atualizado com sucesso!");
+						g.mostrarSucesso(`${this.usuario.nome} atualizado com sucesso!`);
 						this.limpar();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 			remover() {
 				axios
-					.delete(`${baseApi}usuarios/${this.usuario.id}`)
+					.delete(`${g.baseApi}usuarios/${this.usuario.id}`)
 					.then(() => {
-						mostrarSucesso(`${this.usuario.nome} excluído com sucesso!`);
+						g.mostrarSucesso(`${this.usuario.nome} excluído com sucesso!`);
 						this.limpar();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 		},
 		mounted() {

@@ -57,6 +57,7 @@
 				<b-col md="4" sm="12">
 					<b-form-group label="Descrição" label-for="especie-nome">
 						<b-form-input
+							@keydown.enter.native="clicou"
 							id="especie-nome"
 							type="text"
 							v-model="especie.nome"
@@ -123,6 +124,11 @@
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (evento.which === 13) {
+					this.incluir();
+				}
+			},
 			opcoesEspecie(especie, modo) {
 				this.modo = modo;
 				this.especie = especie;
@@ -197,8 +203,6 @@
 
 	.mr-1 {
 		border-radius: 2rem;
-		border-color: black;
-		border-collapse: collapse;
 	}
 	hr {
 		border: 0;

@@ -60,6 +60,7 @@
 							type="text"
 							v-model="produto.nome"
 							placeholder="Informe o nome do produto..."
+							@keydown.enter.native="clicou"
 						/>
 					</b-form-group>
 				</b-col>
@@ -155,6 +156,11 @@
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (evento.which === 13) {
+					this.incluir();
+				}
+			},
 			carregarProduto(produto) {
 				this.produto = { ...produto };
 			},

@@ -1,10 +1,5 @@
 <template>
 	<div class="paginas-admin">
-		<TituloPagina
-			icone="fa fa-cogs"
-			titulo=" Administração do Sistema"
-			sub=" Cadastro & CIA"
-		/>
 		<div class="paginas-admin-tabs">
 			<b-card no-body>
 				<b-tabs card>
@@ -29,7 +24,7 @@
 	import { mapState } from "vuex";
 	export default {
 		nome: "PaginasAdmin",
-		components: { TituloPagina, UsuariosAdmin },
+		components: { UsuariosAdmin },
 		computed: mapState(["usuario"]),
 	};
 </script>

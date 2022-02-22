@@ -58,6 +58,7 @@
 				<b-col md="4" sm="12">
 					<b-form-group label="Descrição" label-for="unidade-nome">
 						<b-form-input
+							@keydown.enter.native="clicou"
 							v-model="unidade.nome"
 							id="unidade-nome"
 							type="text"
@@ -124,6 +125,11 @@
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (evento.which === 13) {
+					this.incluir();
+				}
+			},
 			opcoesUnidade(unidade, modo) {
 				this.modo = modo;
 				this.unidade = unidade;

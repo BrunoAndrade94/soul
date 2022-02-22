@@ -11,8 +11,9 @@ module.exports = (app) => {
 
 	// ROTAS DE USUARIOS
 	app.route("/usuarios")
-		.all(app.config.admin.passaporte.autenticar())
-		.post(admin(app.api.entidades.usuario.incluir))
+		// HABILITAR QUANDO TIVER MAIS GENTE USANDO
+		// .all(app.config.admin.passaporte.autenticar())
+		.post(app.api.entidades.usuario.incluir)
 		.get(app.api.entidades.usuario.obter);
 
 	app.route("/usuario/:id").put(app.api.entidades.usuario.atualizar);

@@ -43,26 +43,6 @@ module.exports = (app) => {
 
 			// // consultar se existe cadastro de usuário ou email
 
-			const verificarEmailDeUsuario = await app
-				.db(tabela.usuarios)
-				.where({ email: usuario.email })
-				.whereNull(coluna.removidoEm);
-
-			validacao.naoExisteOuErro(
-				verificarEmailDeUsuario,
-				notificacao.emailJaCadastrado
-			);
-
-			const verificarUsuarioDeUsuario = await app
-				.db(tabela.usuarios)
-				.where({ usuario: usuario.usuario })
-				.whereNull(coluna.removidoEm);
-
-			validacao.naoExisteOuErro(
-				verificarUsuarioDeUsuario,
-				notificacao.usuarioJaCadastrado
-			);
-
 			// criptografar a senha antes de persistir
 			usuario.senha = criptografarSenha(usuario.senha);
 			delete usuario.confirmacaoSenha;
@@ -77,28 +57,112 @@ module.exports = (app) => {
 		}
 	};
 
+	const verificarUsuario = (usuario) => {
+		try {
+			const verificarEmailDeUsuario = app
+				.db(tabela.usuarios)
+				.where({ email: usuario.email })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarEmailDeUsuario,
+				notificacao.emailJaCadastrado
+			);
+
+			const verificarUsuarioDeUsuario = app
+				.db(tabela.usuarios)
+				.where({ usuario: usuario.usuario })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarUsuarioDeUsuario,
+				notificacao.usuarioJaCadastrado
+			);
+		} catch (erro) {
+			throw erro;
+		}
+	};
+
+	const verificarDadosDeEntrada = (usuario) => {
+		try {
+			validacao.existeOuErro(usuario.nome, notificacao.nomeNaoInformado);
+			validacao.existeOuErro(
+				usuario.email,
+				notificacao.emailNaoInformado
+			);
+			validacao.existeOuErro(
+				usuario.usuario,
+				notificacao.usuarioNaoInformado
+			);
+			validacao.existeOuErro(
+				usuario.senha,
+				notificacao.senhaNaoInformada
+			);
+			validacao.existeOuErro(
+				usuario.confirmacaoSenha,
+				notificacao.confirmacaoInvalida
+			);
+			validacao.igualOuErro(
+				usuario.senha,
+				usuario.confirmacaoSenha,
+				notificacao.senhasNaoConferem
+			);
+		} catch (erro) {
+			throw erro;
+		}
+	};
+
 	const atualizar = async (req, res) => {
 		try {
 			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
 			const usuario = { ...req.body };
 			usuario.id = req.params.id;
 
-			const verificarIdDoUsuario = await app
-				.db(tabela.usuarios)
-				.where({ id: usuario.id });
-
+			validacao.existeOuErro(usuario.nome, notificacao.nomeNaoInformado);
 			validacao.existeOuErro(
-				verificarIdDoUsuario,
-				notificacao.usuarioNaoEncontrado
+				usuario.email,
+				notificacao.emailNaoInformado
+			);
+			validacao.existeOuErro(
+				usuario.usuario,
+				notificacao.usuarioNaoInformado
 			);
 
-			if (usuario.usuario) {
+			const verificarEmailDeUsuario = await app
+				.db(tabela.usuarios)
+				.where({ email: usuario.email })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarEmailDeUsuario,
+				notificacao.emailJaCadastrado
+			);
+
+			const verificarUsuarioDeUsuario = await app
+				.db(tabela.usuarios)
+				.where({ usuario: usuario.usuario })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarUsuarioDeUsuario,
+				notificacao.usuarioJaCadastrado
+			);
+
+			if (usuario.senha) {
+				validacao.existeOuErro(
+					usuario.confirmacaoSenha,
+					notificacao.confirmacaoInvalida
+				);
+				validacao.igualOuErro(
+					usuario.senha,
+					usuario.confirmacaoSenha,
+					notificacao.senhasNaoConferem
+				);
 				usuario.senha = criptografarSenha(usuario.senha);
 				delete usuario.confirmacaoSenha;
 			}
 
 			if (usuario.token) {
 				delete usuario.token, delete usuario.iat, delete usuario.exp;
+				if (!usuario.senha) {
+					delete usuario.senha, delete usuario.confirmacaoSenha;
+				}
 			}
 
 			usuario.alteradoEm = new Date();
