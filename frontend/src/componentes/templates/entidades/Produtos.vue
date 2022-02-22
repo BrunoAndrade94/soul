@@ -204,9 +204,10 @@
 			opcoesProduto(produto, modo) {
 				this.modo = modo;
 				this.produto = produto;
+
 				this.produtos = [this.produto];
-				this.especie = [this.especie];
-				this.unidade = [this.unidade];
+				// this.especie.id = [this.produto.idEspecie];
+				// this.unidade = [this.unidades];
 			},
 			carregarProduto(produto) {
 				this.produto = { ...produto };
@@ -216,6 +217,8 @@
 				// OBTEM OS PRODUTOS COM JOIN EM ESPECIES E UNIDADE
 				axios.get(`${baseApi}produtos`).then((produtos) => {
 					this.produtos = produtos.data;
+					this.carregarEspecies();
+					this.carregarUnidades();
 				});
 			},
 			limpar(modo = "incluir") {

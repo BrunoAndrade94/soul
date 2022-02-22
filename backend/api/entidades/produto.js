@@ -34,6 +34,8 @@ module.exports = (app) => {
 				notificacao.unidadeNaoEncontrada
 			);
 
+			if (produto.id === null) delete produto.id;
+
 			// TENTANDO IMPLEMENTAR UM METODO PARA INSERIR NO BANCO
 			// UM ID INEXISTENTE OU INCLUIR UM ID NOVO
 			//

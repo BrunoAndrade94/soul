@@ -1,8 +1,10 @@
 const porta = 3033;
-// IP REDE LOCAL DANTE
 
-const ip = "192.168.252.47";
-// const ip = "10.10.0.254";
+// IP DANTE
+// const ip = "192.168.252.47";
+
+// IP CASA
+const ip = "10.10.0.254";
 
 const app = require("express")();
 const consign = require("consign");
