@@ -7,9 +7,49 @@ module.exports = (app) => {
 	const incluir = async (req, res) => {
 		try {
 			const produto = { ...req.body };
-			validacao.exiteOuErro(produto.nome, notificacao.nomeNaoInformado);
-			validacao.exiteOuErro(produto.idEspecie, "especie nao informada!");
-			validacao.exiteOuErro(produto.idUnidade, "unidade nao informada!");
+
+			validacao.existeOuErro(produto.nome, notificacao.nomeNaoInformado);
+			validacao.existeOuErro(
+				produto.idEspecie,
+				notificacao.especieNaoInformada
+			);
+			validacao.existeOuErro(
+				produto.idUnidade,
+				notificacao.unidadeNaoInformada
+			);
+
+			const verificarSeExisteEspecie = await app
+				.db(tabela.especies)
+				.where({ id: produto.idEspecie });
+			validacao.existeOuErro(
+				verificarSeExisteEspecie,
+				notificacao.especieNaoEncontrada
+			);
+
+			const verificarSeExisteUnidade = await app
+				.db(tabela.unidades)
+				.where({ id: produto.idUnidade });
+			validacao.existeOuErro(
+				verificarSeExisteUnidade,
+				notificacao.unidadeNaoEncontrada
+			);
+
+			// TENTANDO IMPLEMENTAR UM METODO PARA INSERIR NO BANCO
+			// UM ID INEXISTENTE OU INCLUIR UM ID NOVO
+			//
+			// const obterId = await app
+			// 	.db(tabela.produtos)
+			// 	.select(coluna.id)
+			// 	.where({ id: produto.id })
+			// 	.first();
+			// // primeiro input
+			// if (obterId.id) {
+			// 	produto.id = 1;
+			// 	// demais input
+			// } else {
+			// 	console.log(obterId);
+			// 	produto.id = obterId++;
+			// }
 
 			app.db(tabela.produtos)
 				.insert(produto)
@@ -20,5 +60,19 @@ module.exports = (app) => {
 		}
 	};
 
-	return { incluir };
+	const obterJoin = (req, res) => {
+		app.db(tabela.produtos)
+			.select(
+				"produtos.id",
+				"produtos.nome",
+				"especies.nome as nomeEspecie",
+				"unidades.nome as nomeUnidade"
+			)
+			.join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
+			.join(tabela.unidades, "produtos.idUnidade", "=", "unidades.id")
+			.then((produtos) => res.json(produtos))
+			.catch((erro) => res.status(500).send(erro));
+	};
+
+	return { incluir, obterJoin };
 };

@@ -24,7 +24,9 @@ module.exports = (app) => {
 		.delete(admin(app.api.entidades.usuario.remover));
 
 	// ROTAS DE PRODUTOS
-	app.route("/produtos").post(app.api.entidades.produto.incluir);
+	app.route("/produtos")
+		.post(app.api.entidades.produto.incluir)
+		.get(app.api.entidades.produto.obterJoin);
 
 	// ROTAS DE ESPECIES
 	app.route("/especie").get(app.api.entidades.especie.obterPorParametro);

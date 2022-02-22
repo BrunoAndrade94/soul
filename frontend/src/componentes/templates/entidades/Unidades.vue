@@ -8,7 +8,6 @@
 
 		<div class="butao-crud">
 			<b-button
-				v-model="unidade"
 				class="mr-1"
 				variant="success"
 				@click="obter"
@@ -189,7 +188,7 @@
 
 <style>
 	.mr-1 {
-		border-radius: 20px;
+		border-radius: 0px;
 	}
 	hr {
 		border: 0;

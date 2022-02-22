@@ -14,7 +14,9 @@ module.exports = (app) => {
 	const classeNaoInformada = "Classe não informada!";
 	const classePossuiProduto = "Classe possui produto!";
 
-	const especieJaExiste = "Espécie já existe!";
+	const especieJaCadastrada = "Espécie já cadastrada!";
+	const especieNaoEncontrada = "Espécie não encontrada!";
+	const especieNaoInformada = "Espécie não informada!";
 
 	const unidadeNaoEncontrada = "Unidade não encontrada!";
 	const unidadeJaCadastrada = "Unidade já cadastrada!";
@@ -59,6 +61,8 @@ module.exports = (app) => {
 		moduloPossuiTelas,
 		moduloPossuiSubModulos,
 		moduloAlterado,
-		especieJaExiste,
+		especieJaCadastrada,
+		especieNaoEncontrada,
+		especieNaoInformada,
 	};
 };

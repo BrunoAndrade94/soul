@@ -96,10 +96,10 @@
 	import { mapState } from "vuex";
 	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
-	import BotaoCrud from "../BotaoCrud.vue";
+	import Botao from "../Botao.vue";
 	export default {
 		nome: "Especies",
-		components: { TituloPagina, BotaoCrud },
+		components: { TituloPagina, Botao },
 		computed: mapState(["especie"]),
 		data: function () {
 			return {

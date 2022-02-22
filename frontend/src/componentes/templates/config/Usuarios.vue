@@ -114,13 +114,12 @@
 					.put(`${g.baseApi}usuario/${this.usuario.id}`, this.usuario)
 					.then(() => {
 						g.mostrarSucesso(`${this.usuario.nome} atualizado com sucesso!`);
-						// this.limparSenha();
+						//this.limparSenha();
 					})
 					.catch(g.mostrarErro);
 			},
 			limparSenha() {
-				this.usuario.senha = "";
-				this.usuario.confirmacaoSenha = "";
+				// this.usuario = {};
 			},
 		},
 		mounted() {

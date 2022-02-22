@@ -129,20 +129,33 @@ module.exports = (app) => {
 			const verificarEmailDeUsuario = await app
 				.db(tabela.usuarios)
 				.where({ email: usuario.email })
-				.whereNull(coluna.removidoEm);
-			validacao.naoExisteOuErro(
-				verificarEmailDeUsuario,
-				notificacao.emailJaCadastrado
-			);
+				.whereNot({ id: usuario.id })
+				.whereNull(coluna.removidoEm)
+				.first();
+			if (verificarEmailDeUsuario) {
+				if (usuario.email === verificarEmailDeUsuario.email) {
+					validacao.naoExisteOuErro(
+						verificarEmailDeUsuario,
+						notificacao.emailJaCadastrado
+					);
+				}
+			}
 
 			const verificarUsuarioDeUsuario = await app
 				.db(tabela.usuarios)
 				.where({ usuario: usuario.usuario })
-				.whereNull(coluna.removidoEm);
-			validacao.naoExisteOuErro(
-				verificarUsuarioDeUsuario,
-				notificacao.usuarioJaCadastrado
-			);
+				.whereNot({ id: usuario.id })
+				.whereNull(coluna.removidoEm)
+				.first();
+			console.log(verificarUsuarioDeUsuario);
+			if (verificarUsuarioDeUsuario) {
+				if (usuario.usuario === verificarUsuarioDeUsuario.usuario) {
+					validacao.naoExisteOuErro(
+						verificarUsuarioDeUsuario,
+						notificacao.usuarioJaCadastrado
+					);
+				}
+			}
 
 			if (usuario.senha) {
 				validacao.existeOuErro(

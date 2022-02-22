@@ -19,7 +19,6 @@
 </template>
 
 <script>
-	import TituloPagina from "../TituloPagina.vue";
 	import UsuariosAdmin from "../admin/UsuariosAdmin.vue";
 	import { mapState } from "vuex";
 	export default {

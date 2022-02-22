@@ -45,6 +45,7 @@
 				<b-col md="2" sm="2">
 					<b-form-group label="Código" label-for="produto-id">
 						<b-form-input
+							readonly="true"
 							v-model="produto.id"
 							id="produto-id"
 							type="number"
@@ -54,8 +55,9 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="4" sm="10">
-					<b-form-group label="Produto" label-for="produto-nome">
+					<b-form-group label="Produto" label-for="produto">
 						<b-form-input
+							autofocus="true"
 							id="produto-nome"
 							type="text"
 							v-model="produto.nome"
@@ -69,7 +71,9 @@
 				<b-col md="2" sm="2">
 					<b-form-group label="Código" label-for="especie-id">
 						<b-form-input
-							v-model="especie.id"
+							required
+							readonly="true"
+							v-model="especie"
 							id="especie-id"
 							type="number"
 							min="0"
@@ -82,10 +86,10 @@
 						<b-form-select
 							required
 							id="especie-nome"
-							v-model="especie.nome"
+							v-model="especie"
 							:options="especies"
-							:value-field="id"
-							:text-field="nome"
+							value-field="id"
+							text-field="nome"
 						/>
 					</b-form-group>
 				</b-col>
@@ -94,7 +98,9 @@
 				<b-col md="2" sm="2">
 					<b-form-group label="Código" label-for="unidade-id">
 						<b-form-input
-							v-model="unidade.id"
+							required
+							readonly="true"
+							v-model="unidade"
 							id="unidade-id"
 							type="number"
 							min="0"
@@ -102,19 +108,43 @@
 						/>
 					</b-form-group>
 				</b-col>
+				<div></div>
 				<b-col md="4" sm="10">
 					<b-form-group label="Unidade" label-for="unidade-nome">
 						<b-form-select
 							required
 							id="unidade-nome"
-							v-model="unidades.nome"
+							v-model="unidade"
 							:options="unidades"
+							value-field="id"
+							text-field="nome"
 						>
 						</b-form-select>
 					</b-form-group>
 				</b-col>
 			</b-row>
 		</b-form>
+		<hr />
+		<b-table hover striped :items="produtos" :fields="campos">
+			<template slot="acoes" slot-scope="data">
+				<b-button
+					variant="info"
+					@click="opcoesProduto(data.item, 'opcoes')"
+					v-show="modo === 'incluir'"
+					class="mr-1"
+				>
+					<i class="fa-solid fa-cogs" />
+				</b-button>
+				<b-button
+					variant="warning"
+					@click="carregarProdutos(data.item, 'incluir')"
+					v-show="modo === 'opcoes'"
+					class="mr-1"
+				>
+					<i class="fa-solid fa-cancel" />
+				</b-button>
+			</template>
+		</b-table>
 	</div>
 </template>
 
@@ -140,17 +170,22 @@
 				campos: [
 					{
 						key: "id",
-						label: "Código",
+						label: "#",
 					},
 					{
 						key: "nome",
 						label: "Descrição",
+						sortable: true,
 					},
-					{ key: "especie.nome", label: "Espécie", sortable: true },
+					{ key: "nomeEspecie", label: "Espécie", sortable: true },
 					{
-						key: "unidade.nome",
+						key: "nomeUnidade",
 						label: "Unidade",
 						sortable: true,
+					},
+					{
+						key: "acoes",
+						label: "Opções",
 					},
 				],
 			};
@@ -161,22 +196,47 @@
 					this.incluir();
 				}
 			},
+			carregarDados() {
+				this.carregarProdutos();
+				this.carregarEspecies();
+				this.carregarUnidades();
+			},
+			opcoesProduto(produto, modo) {
+				this.modo = modo;
+				this.produto = produto;
+				this.produtos = [this.produto];
+				this.especie = [this.especie];
+				this.unidade = [this.unidade];
+			},
 			carregarProduto(produto) {
 				this.produto = { ...produto };
 			},
 			carregarProdutos() {
+				this.limpar();
+				// OBTEM OS PRODUTOS COM JOIN EM ESPECIES E UNIDADE
 				axios.get(`${baseApi}produtos`).then((produtos) => {
 					this.produtos = produtos.data;
 				});
 			},
-			limpar() {
+			limpar(modo = "incluir") {
+				this.modo = modo;
 				this.produto = {};
+				this.especie = {};
+				this.unidade = {};
+				this.produtos = {};
+				this.especies = {};
+				this.unidades = {};
 			},
 			incluir() {
+				this.produto.idEspecie = this.especie;
+				this.produto.idUnidade = this.unidade;
+
 				axios
 					.post(`${baseApi}produtos`, this.produto)
 					.then(() => {
 						mostrarSucesso(`Produto: ${this.produto.nome} incluído com sucesso!`);
+						this.limpar();
+						this.carregarDados();
 					})
 					.catch(mostrarErro);
 			},
@@ -197,12 +257,16 @@
 					this.unidades = unidades.data;
 				});
 			},
+
+			/// SEM USO
+			inserirUnidades() {
+				this.unidade.id = 99;
+			},
 		},
-		mounted() {
-			this.carregarProdutos();
-			this.carregarEspecies();
-			this.carregarUnidades();
+		created() {
+			this.carregarDados();
 		},
+		mounted() {},
 	};
 </script>
 

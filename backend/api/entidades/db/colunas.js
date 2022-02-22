@@ -14,7 +14,9 @@ module.exports = () => {
 	const admin = "admin";
 
 	// colunas tabela produtos
+	const idModulo = "idModulo";
 	const idUnidade = "idUnidade";
+	const idEspecie = "idEspecie";
 	const idClasse = "idClasse";
 	const idTela = "idTela";
 	const maeId = "maeId";
@@ -29,5 +31,8 @@ module.exports = () => {
 		senha,
 		admin,
 		maeId,
+		idUnidade,
+		idEspecie,
+		idTela,
 	};
 };
