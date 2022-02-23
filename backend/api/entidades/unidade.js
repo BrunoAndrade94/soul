@@ -27,6 +27,7 @@ module.exports = (app) => {
 		app.db(tabela.unidades)
 			.select(coluna.id, coluna.nome)
 			.whereNull(coluna.removidoEm)
+			.orderBy(coluna.nome)
 			.then((unidades) => res.json(unidades))
 			.catch((erro) => res.status(500).send(erro));
 	};

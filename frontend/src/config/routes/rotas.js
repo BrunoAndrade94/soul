@@ -4,7 +4,7 @@ import VueRouter from "vue-router";
 import { chaveUsuario } from "@/global";
 import Home from "../../componentes/home/Home";
 import Autenticar from "../../componentes/auth/Autenticar";
-import PaginasAdmin from "../../componentes/templates/admin/PaginasAdmin";
+import PaginasAdmin from "../../componentes/admin/PaginasAdmin";
 import Usuarios from "../../componentes/templates/config/Usuarios";
 import PaginasProduto from "../../componentes/templates/entidades/PaginasProduto";
 

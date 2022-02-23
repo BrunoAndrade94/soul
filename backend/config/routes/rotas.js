@@ -28,6 +28,10 @@ module.exports = (app) => {
 		.post(app.api.entidades.produto.incluir)
 		.get(app.api.entidades.produto.obterJoin);
 
+	app.route("/produtos/:id")
+		.put(app.api.entidades.produto.atualizar)
+		.delete(app.api.entidades.produto.remover);
+
 	// ROTAS DE ESPECIES
 	app.route("/especie").get(app.api.entidades.especie.obterPorParametro);
 

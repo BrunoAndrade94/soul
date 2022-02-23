@@ -93,14 +93,14 @@
 
 <script>
 	import axios from "axios";
-	import { mapState } from "vuex";
+	// import { mapState } from "vuex";
 	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
-	import BotaoCrud from "../BotaoCrud.vue";
+	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Unidades",
 		components: { TituloPagina, BotaoCrud },
-		computed: mapState(["unidade"]),
+		// computed: mapState(["unidade"]),
 		data: function () {
 			return {
 				modo: "incluir",

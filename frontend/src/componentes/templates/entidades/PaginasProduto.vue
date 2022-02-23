@@ -1,8 +1,8 @@
 <template>
 	<div class="paginas-produto">
 		<div class="tabs">
-			<b-card class="card" no-body>
-				<b-tabs card>
+			<b-card no-body>
+				<b-tabs pills card lazy>
 					<b-tab title="Produtos" active>
 						<Produtos />
 					</b-tab>
@@ -29,7 +29,4 @@
 </script>
 
 <style>
-	.tabs {
-		display: center;
-	}
 </style>

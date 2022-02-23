@@ -58,6 +58,7 @@ module.exports = (app) => {
 		app.db(tabela.especies)
 			.select(coluna.id, coluna.nome)
 			.whereNull(coluna.removidoEm)
+			.orderBy(coluna.nome)
 			.then((especies) => res.json(especies))
 			.catch((erro) => res.status(500).send(erro));
 	};

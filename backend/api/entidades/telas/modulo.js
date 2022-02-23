@@ -35,6 +35,8 @@ module.exports = (app) => {
 			modulo.id = req.params.id;
 			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
 
+			console.log(modulo);
+
 			const verificarNoBanco = await app
 				.db(tabela.modulos)
 				.where({ id: modulo.id });
@@ -103,8 +105,8 @@ module.exports = (app) => {
 		});
 
 		modulosComCaminho.sort((a, b) => {
-			if (a.caminho < b.caminho) return -1;
-			if (a.caminho > b.caminho) return 1;
+			if (a.nome < b.nome) return -1;
+			if (a.nome > b.nome) return 1;
 			return 0;
 		});
 
@@ -200,6 +202,7 @@ module.exports = (app) => {
 	const obterArvore = (req, res) => {
 		app.db(tabela.modulos)
 			.select(coluna.id, coluna.nome, coluna.maeId)
+			.orderBy(coluna.nome)
 			.whereNull(coluna.removidoEm)
 			.then((modulos) => res.json(paraArvore(modulos)))
 			.catch((erro) => res.status(500).send(erro));

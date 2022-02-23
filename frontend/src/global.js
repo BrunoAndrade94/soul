@@ -5,10 +5,10 @@ const porta = 3033;
 // export const baseApi = "http://localhost:3033/";
 
 // IP DANTE
-// const ip = "192.168.252.47";
+const ip = "192.168.252.47";
 
 // ID CASA
-const ip = "10.10.0.254";
+// const ip = "10.10.0.254";
 
 export const baseApi = `http://${ip}:${porta}/`;
 

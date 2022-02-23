@@ -155,7 +155,6 @@
 					.post(`${baseApi}especies`, this.especie)
 					.then(() => {
 						mostrarSucesso(`Espécie: ${this.especie.nome} incluída com sucesso!`);
-						this.limpar();
 						this.carregarEspecies();
 					})
 					.catch(mostrarErro);
@@ -167,7 +166,6 @@
 						mostrarSucesso(
 							`Espécie: ${this.especie.nome} atualizda com sucesso!`
 						);
-						this.limpar();
 						this.carregarEspecies();
 					})
 					.catch(mostrarErro);
@@ -182,7 +180,6 @@
 					.delete(`${baseApi}especies/${this.especie.id}`)
 					.then(() => {
 						mostrarSucesso(`Espécie: ${this.especie.nome} excluída com sucesso!`);
-						this.limpar();
 						this.carregarEspecies();
 					})
 					.catch(mostrarErro);

@@ -1,12 +1,12 @@
 <template>
 	<div class="usuarios">
-		<TituloPagina
-			icone="fa fa-cogs"
-			titulo=" Configurações do Usuário"
-			:sub="usuario.nome"
-		/>
 		<b-card no-body>
-			<b-tabs card>
+			<TituloPagina
+				icone="fa fa-cogs"
+				titulo=" Configurações do Usuário"
+				:sub="usuario.nome"
+			/>
+			<b-tabs pills card>
 				<b-tab title="Usuário" active>
 					<b-form>
 						<input id="usuario-id" type="hidden" v-model="usuario.id" />
@@ -82,10 +82,6 @@
 							</b-col>
 						</b-row>
 						<hr />
-						<b-button class="atualizar" variant="primary" @click="atualizar">
-							<Botao icone="fa-solid fa-highlighter" titulo="Atualizar" />
-							<!-- <i class="fa-solid fa-highlighter" /> Atualizar -->
-						</b-button>
 					</b-form>
 				</b-tab>
 			</b-tabs>
@@ -98,10 +94,9 @@
 	import g from "@/global";
 	import { mapState } from "vuex";
 	import TituloPagina from "../TituloPagina.vue";
-	import Botao from "../Botao.vue";
 	export default {
 		nome: "Usuarios",
-		components: { TituloPagina, Botao },
+		components: { TituloPagina },
 		computed: mapState(["usuario"]),
 		data: function () {
 			return {

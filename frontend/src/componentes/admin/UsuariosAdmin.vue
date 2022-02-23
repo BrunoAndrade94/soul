@@ -1,9 +1,9 @@
 <template>
 	<div class="usuario-admin">
 		<TituloPagina
-			icone="fa fa-cogs"
-			titulo=" Administração do Sistema"
-			sub=" Cadastro & CIA"
+			icone="fa-solid fa-users-gear"
+			titulo="Usuários"
+			sub="Aqui pode gerenciar as informações dos usuários"
 		/>
 		<b-form>
 			<input id="usuario-id" type="hidden" v-model="usuario.id" />
@@ -12,9 +12,10 @@
 					<b-form-group label="Nome:" label-for="usuario.nome">
 						<b-form-input
 							id="usuario-nome"
+							required
 							type="text"
 							v-model="usuario.nome"
-							required
+							:readonly="modo === 'remover'"
 							placeholder="Informe o nome..."
 						/>
 					</b-form-group>
@@ -23,9 +24,10 @@
 					<b-form-group label="E-mail:" label-for="usuario.email">
 						<b-form-input
 							id="usuario-email"
+							required
 							type="email"
 							v-model="usuario.email"
-							required
+							:readonly="modo === 'remover'"
 							placeholder="Informe o e-mail..."
 						/>
 					</b-form-group>
@@ -37,9 +39,10 @@
 					<b-form-group label="Usuário:" label-for="usuario.usuario">
 						<b-form-input
 							id="usuario-usuario"
+							required
 							type="text"
 							v-model="usuario.usuario"
-							required
+							:readonly="modo === 'remover'"
 							placeholder="Informe o usuário..."
 						/>
 					</b-form-group>
@@ -48,6 +51,7 @@
 					id="usuario-admin"
 					v-model="usuario.admin"
 					class="mt-4 mb-4 ml-4"
+					:disabled="modo === 'remover'"
 				>
 					Administração
 				</b-form-checkbox>
@@ -64,9 +68,9 @@
 					<b-form-group label="Senha:" label-for="usuario.senha">
 						<b-form-input
 							id="usuario-senha"
+							required
 							type="password"
 							v-model="usuario.senha"
-							required
 							placeholder="Informe a senha..."
 						/>
 					</b-form-group>
@@ -127,7 +131,7 @@
 
 <script>
 	import { mapState } from "vuex";
-	import TituloPagina from "../TituloPagina.vue";
+	import TituloPagina from "../templates/TituloPagina.vue";
 	import g from "@/global";
 	import axios from "axios";
 	export default {

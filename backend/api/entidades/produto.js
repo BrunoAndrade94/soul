@@ -62,19 +62,57 @@ module.exports = (app) => {
 		}
 	};
 
+	const atualizar = (req, res) => {
+		try {
+			const produto = { ...req.body };
+			if (!produto.id) produto.id = req.params.id;
+
+			produto.alteradoEm = new Date();
+			app.db(tabela.produtos)
+				.update(produto)
+				.where({ id: produto.id })
+				.then((_) => res.status(204).send())
+				.catch((erro) => res.status(500).send(erro));
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
+	};
+
 	const obterJoin = (req, res) => {
 		app.db(tabela.produtos)
 			.select(
 				"produtos.id",
 				"produtos.nome",
+				"especies.id as idEspecie",
 				"especies.nome as nomeEspecie",
+				"unidades.id as idUnidade",
 				"unidades.nome as nomeUnidade"
 			)
+			.whereNull("produtos.removidoEm")
+			.orderBy(coluna.nome)
 			.join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
 			.join(tabela.unidades, "produtos.idUnidade", "=", "unidades.id")
 			.then((produtos) => res.json(produtos))
 			.catch((erro) => res.status(500).send(erro));
 	};
 
-	return { incluir, obterJoin };
+	const remover = async (req, res) => {
+		try {
+			const produto = { ...req.body };
+			if (!produto.id) produto.id = req.params.id;
+
+			produto.removidoEm = new Date();
+			const removido = await app
+				.db(tabela.produtos)
+				.update(produto)
+				.where({ id: produto.id });
+
+			validacao.existeOuErro(removido, notificacao.produtoNaoEncontrado);
+			res.status(204).send();
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
+	};
+
+	return { incluir, atualizar, obterJoin, remover };
 };

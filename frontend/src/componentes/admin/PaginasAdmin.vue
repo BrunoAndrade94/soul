@@ -2,15 +2,15 @@
 	<div class="paginas-admin">
 		<div class="paginas-admin-tabs">
 			<b-card no-body>
-				<b-tabs card>
+				<b-tabs pills card lazy>
 					<b-tab title="Usuários" active>
 						<UsuariosAdmin />
 					</b-tab>
 					<b-tab title="Módulos">
-						<h1>Módulos</h1>
+						<Modulos />
 					</b-tab>
 					<b-tab title="Telas">
-						<h1>Telas</h1>
+						<Telas />
 					</b-tab>
 				</b-tabs>
 			</b-card>
@@ -19,12 +19,14 @@
 </template>
 
 <script>
-	import UsuariosAdmin from "../admin/UsuariosAdmin.vue";
-	import { mapState } from "vuex";
+	import UsuariosAdmin from "./UsuariosAdmin.vue";
+	import Modulos from "../templates/entidades/Modulos.vue";
+	import Telas from "../templates/entidades/Telas.vue";
+	// import { mapState } from "vuex";
 	export default {
 		nome: "PaginasAdmin",
-		components: { UsuariosAdmin },
-		computed: mapState(["usuario"]),
+		components: { UsuariosAdmin, Modulos, Telas },
+		// computed: mapState(["usuario"]),
 	};
 </script>
 

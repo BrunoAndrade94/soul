@@ -10,7 +10,7 @@
 				class="mr-1"
 				variant="success"
 				@click="obter"
-				v-show="modo === 'incluir'"
+				:disabled="modo === 'opcoes'"
 			>
 				<i class="fa-solid fa-magnifying-glass" />
 			</b-button>
@@ -18,7 +18,7 @@
 				class="mr-1"
 				variant="primary"
 				@click="incluir"
-				v-show="modo === 'incluir'"
+				:disabled="modo === 'opcoes'"
 			>
 				<i class="fa-solid fa-download" />
 			</b-button>
@@ -26,7 +26,7 @@
 				class="mr-1"
 				variant="warning"
 				@click="atualizar"
-				v-show="modo === 'opcoes'"
+				:disabled="modo === 'incluir'"
 			>
 				<i class="fa-solid fa-highlighter" />
 			</b-button>
@@ -34,7 +34,7 @@
 				class="mr-1"
 				variant="danger"
 				@click="excluir"
-				v-show="modo === 'opcoes'"
+				:disabled="modo === 'incluir'"
 			>
 				<i class="fa-solid fa-trash-can" />
 			</b-button>
@@ -43,9 +43,9 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="produto-id">
+					<b-form-group label="Código" label-for="produto">
 						<b-form-input
-							readonly="true"
+							:readonly="true"
 							v-model="produto.id"
 							id="produto-id"
 							type="number"
@@ -57,7 +57,7 @@
 				<b-col md="4" sm="10">
 					<b-form-group label="Produto" label-for="produto">
 						<b-form-input
-							autofocus="true"
+							:autofocus="true"
 							id="produto-nome"
 							type="text"
 							v-model="produto.nome"
@@ -69,10 +69,10 @@
 			</b-row>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="especie-id">
+					<b-form-group label="Código" label-for="especie">
 						<b-form-input
 							required
-							readonly="true"
+							:readonly="true"
 							v-model="especie"
 							id="especie-id"
 							type="number"
@@ -82,7 +82,7 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="4" sm="10">
-					<b-form-group label="Espécie" label-for="especie-nome">
+					<b-form-group label="Espécie" label-for="especie">
 						<b-form-select
 							required
 							id="especie-nome"
@@ -96,10 +96,10 @@
 			</b-row>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="unidade-id">
+					<b-form-group label="Código" label-for="unidade">
 						<b-form-input
 							required
-							readonly="true"
+							:readonly="true"
 							v-model="unidade"
 							id="unidade-id"
 							type="number"
@@ -110,7 +110,7 @@
 				</b-col>
 				<div></div>
 				<b-col md="4" sm="10">
-					<b-form-group label="Unidade" label-for="unidade-nome">
+					<b-form-group label="Unidade" label-for="unidade">
 						<b-form-select
 							required
 							id="unidade-nome"
@@ -150,14 +150,17 @@
 
 <script>
 	import axios from "axios";
-	import { mapState } from "vuex";
+	// import { mapState } from "vuex";
 	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
-	import BotaoCrud from "../BotaoCrud.vue";
 	export default {
 		nome: "Produtos",
-		components: { TituloPagina, BotaoCrud },
-		computed: mapState(["produto", "especie", "unidade"]),
+		components: { TituloPagina },
+		// computed: {
+		// 	return: mapState({
+		// 		unidade: (state) => state.unidade,
+		// 	}),
+		// },
 		data: function () {
 			return {
 				modo: "incluir",
@@ -193,7 +196,11 @@
 		methods: {
 			clicou(evento) {
 				if (evento.which === 13) {
-					this.incluir();
+					if (this.modo === "incluir") {
+						this.incluir();
+					} else {
+						this.atualizar();
+					}
 				}
 			},
 			carregarDados() {
@@ -206,6 +213,7 @@
 				this.produto = produto;
 
 				this.produtos = [this.produto];
+
 				// this.especie.id = [this.produto.idEspecie];
 				// this.unidade = [this.unidades];
 			},
@@ -243,9 +251,40 @@
 					})
 					.catch(mostrarErro);
 			},
-			atualizar() {},
-			procurar() {},
-			excluir() {},
+			atualizar() {
+				// remove o nome da especie e unidade
+				delete this.produto.nomeEspecie;
+				delete this.produto.nomeUnidade;
+
+				// injeta novos ids especie e unidade
+				if (Number(this.especie)) {
+					this.produto.idEspecie = this.especie;
+				} else if (Number(this.unidade)) {
+					this.produto.idUnidade = this.unidade;
+				}
+
+				axios
+					.put(`${baseApi}produtos/${this.produto.id}`, this.produto)
+					.then(() => {
+						mostrarSucesso(
+							`Produto: ${this.produto.nome} atualizado com sucesso!`
+						);
+						this.limpar();
+						this.carregarDados();
+					})
+					.catch(mostrarErro);
+			},
+			obter() {},
+			excluir() {
+				axios
+					.delete(`${baseApi}produtos/${this.produto.id}`, this.produto)
+					.then(() => {
+						mostrarSucesso(`Produto: ${this.produto.nome} removido com sucesso!`);
+						this.limpar();
+						this.carregarDados();
+					})
+					.catch(mostrarErro);
+			},
 
 			// ==============================
 
@@ -260,16 +299,11 @@
 					this.unidades = unidades.data;
 				});
 			},
-
-			/// SEM USO
-			inserirUnidades() {
-				this.unidade.id = 99;
-			},
 		},
-		created() {
+		created() {},
+		mounted() {
 			this.carregarDados();
 		},
-		mounted() {},
 	};
 </script>
 
