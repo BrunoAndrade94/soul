@@ -44,7 +44,9 @@ module.exports = (app) => {
 		.put(app.api.entidades.especie.atualizar)
 		.delete(app.api.entidades.especie.remover);
 
+	//
 	// ROTAS DE CLASSES
+	//
 	app.route("/classes")
 		.all(app.config.admin.passaporte.autenticar())
 		.post(app.api.entidades.classe.incluir)
@@ -56,7 +58,9 @@ module.exports = (app) => {
 		.delete(app.api.entidades.classe.remover)
 		.put(app.api.entidades.classe.atualizar);
 
+	//
 	// ROTAS UNIDADES
+	//
 	app.route("/unidades")
 		.post(app.api.entidades.unidade.incluir)
 		.get(app.api.entidades.unidade.obter);
@@ -65,8 +69,9 @@ module.exports = (app) => {
 		.put(app.api.entidades.unidade.atualizar)
 		.get(app.api.entidades.unidade.obterPorId)
 		.delete(app.api.entidades.unidade.remover);
-
+	//
 	// ROTAS MÓDULOS
+	//
 	app.route("/modulos")
 		.post(app.api.entidades.telas.modulo.incluir)
 		.get(app.api.entidades.telas.modulo.obter);
@@ -85,11 +90,13 @@ module.exports = (app) => {
 		.delete(app.api.entidades.telas.modulo.remover)
 		.put(app.api.entidades.telas.modulo.atualizar);
 
+	//
 	// ROTAS TELAS
+	//
 	app.route("/telas")
-		.all(app.config.admin.passaporte.autenticar())
+		// .all(app.config.admin.passaporte.autenticar())
 		.post(app.api.entidades.telas.tela.incluir)
-		.get(app.api.entidades.telas.tela.obter);
+		.get(app.api.entidades.telas.tela.obterJoin);
 
 	app.route("/telas/:id")
 		.all(app.config.admin.passaporte.autenticar())

@@ -28,37 +28,60 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="6" sm="12">
-					<b-form-group label="Descrição" label-for="modulo-nome">
+					<b-form-group label="Módulo" label-for="modulo-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							id="modulo-nome"
 							type="text"
 							v-model="modulo.nome"
-							placeholder="Informe o módulo..."
+							placeholder="Informe o nome do módulo..."
 						></b-form-input>
 					</b-form-group>
 				</b-col>
 			</b-row>
 			<b-row>
 				<b-col md="2" sm="12">
-					<b-form-group label="Código" label-for="modulo-maeId">
-						<b-form-input
-							id="modulo-maeId"
-							type="number"
-							v-model="modulo.maeId"
-							:readonly="true"
-							placeholder="#"
-						></b-form-input>
+					<b-form-group label="-- SEM USO --">
+						<b-form-input :readonly="true" placeholder="#"></b-form-input>
 					</b-form-group>
 				</b-col>
 				<b-col md="6" sm="12">
-					<b-form-group label="Descrição" label-for="modulo-nome">
+					<b-form-group label="Caminho" label-for="modulo-nome">
 						<b-form-input
 							id="modulo-nome"
 							type="text"
 							v-model="modulo.caminho"
 							placeholder="Caminho do módulo..."
 						></b-form-input>
+					</b-form-group>
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col md="2" sm="2">
+					<b-form-group label="Código" label-for="maeId">
+						<b-form-input
+							required
+							:readonly="true"
+							v-model="modulo"
+							id="maeId"
+							type="number"
+							min="0"
+							placeholder="#"
+						/>
+					</b-form-group>
+				</b-col>
+				<div></div>
+				<b-col md="6" sm="12">
+					<b-form-group label="Módulo Mãe" label-for="modulo-maeId">
+						<b-form-select
+							required
+							id="modulo-maeId"
+							v-model="modulo"
+							:options="modulos"
+							value-field="id"
+							text-field="nome"
+						>
+						</b-form-select>
 					</b-form-group>
 				</b-col>
 			</b-row>
@@ -107,7 +130,7 @@
 					{ key: "nome", label: "Descrição", sortable: true },
 					{
 						key: "maeId",
-						label: "Id Mãe",
+						label: "Mãe",
 					},
 					{ key: "caminho", label: "Caminho" },
 					{ key: "acoes", label: "Opções" },
@@ -144,12 +167,14 @@
 					.post(`${g.baseApi}modulos`, this.modulo)
 					.then(() => {
 						g.mostrarSucesso(`Módulo: ${this.modulo.nome} incluído com sucesso!`);
-						this.limpar();
+						// this.limpar();
+						this.carregarModulos();
 					})
 					.catch(g.mostrarErro);
 			},
 			atualizar() {
 				delete this.modulo.caminho;
+
 				axios
 					.put(`${g.baseApi}modulos/${this.modulo.id}`, this.modulo)
 					.then(() => {

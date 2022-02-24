@@ -42,6 +42,23 @@ module.exports = (app) => {
 			);
 
 			// // consultar se existe cadastro de usuário ou email
+			const verificarEmailDeUsuario = await app
+				.db(tabela.usuarios)
+				.where({ email: usuario.email })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarEmailDeUsuario,
+				notificacao.emailJaCadastrado
+			);
+
+			const verificarUsuarioDeUsuario = await app
+				.db(tabela.usuarios)
+				.where({ usuario: usuario.usuario })
+				.whereNull(coluna.removidoEm);
+			validacao.naoExisteOuErro(
+				verificarUsuarioDeUsuario,
+				notificacao.usuarioJaCadastrado
+			);
 
 			// criptografar a senha antes de persistir
 			usuario.senha = criptografarSenha(usuario.senha);
@@ -57,7 +74,8 @@ module.exports = (app) => {
 		}
 	};
 
-	const verificarUsuario = (usuario) => {
+	// SEM USO
+	const verificarEmailUsuario = (usuario) => {
 		try {
 			const verificarEmailDeUsuario = app
 				.db(tabela.usuarios)
@@ -67,17 +85,8 @@ module.exports = (app) => {
 				verificarEmailDeUsuario,
 				notificacao.emailJaCadastrado
 			);
-
-			const verificarUsuarioDeUsuario = app
-				.db(tabela.usuarios)
-				.where({ usuario: usuario.usuario })
-				.whereNull(coluna.removidoEm);
-			validacao.naoExisteOuErro(
-				verificarUsuarioDeUsuario,
-				notificacao.usuarioJaCadastrado
-			);
 		} catch (erro) {
-			throw erro;
+			return erro;
 		}
 	};
 

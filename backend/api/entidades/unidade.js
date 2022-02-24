@@ -9,7 +9,7 @@ module.exports = (app) => {
 			const unidade = { ...req.body };
 			validacao.existeOuErro(
 				unidade.nome,
-				notificacao.unidadeNaoEncontrada
+				notificacao.unidadeNaoInformada
 			);
 
 			if (unidade.id === null) delete unidade.id;

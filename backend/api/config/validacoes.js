@@ -26,5 +26,17 @@ module.exports = (app) => {
 		if (!Number(valor)) throw notificacao.atencao + erro;
 	}
 
-	return { existeOuErro, naoExisteOuErro, igualOuErro, numeroOuErro };
+	function objetoVazio(objeto) {
+		return (
+			Object.keys(objeto).length === 0 && objeto.constructor === Object
+		);
+	}
+
+	return {
+		existeOuErro,
+		naoExisteOuErro,
+		igualOuErro,
+		numeroOuErro,
+		objetoVazio,
+	};
 };

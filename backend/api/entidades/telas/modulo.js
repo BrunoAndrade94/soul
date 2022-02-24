@@ -6,7 +6,9 @@ module.exports = (app) => {
 
 	const incluir = async (req, res) => {
 		try {
-			const modulo = { nome: req.body.nome, maeId: req.body.maeId };
+			const modulo = { ...req.body };
+
+			console.log(modulo);
 			validacao.existeOuErro(modulo.nome, notificacao.nomeNaoInformado);
 
 			if (modulo.maeId !== undefined) {

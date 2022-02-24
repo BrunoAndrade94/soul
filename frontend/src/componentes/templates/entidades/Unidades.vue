@@ -6,44 +6,18 @@
 			sub="Aqui pode alterar as informações das unidades"
 		/>
 
-		<div class="butao-crud">
-			<b-button
-				class="mr-1"
-				variant="success"
-				@click="obter"
-				v-show="modo === 'incluir'"
-			>
-				<i class="fa-solid fa-magnifying-glass" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="primary"
-				@click="incluir"
-				v-show="modo === 'incluir'"
-			>
-				<i class="fa-solid fa-download" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="warning"
-				@click="atualizar"
-				v-show="modo === 'opcoes'"
-			>
-				<i class="fa-solid fa-highlighter" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="danger"
-				@click="excluir"
-				v-show="modo === 'opcoes'"
-			>
-				<i class="fa-solid fa-trash-can" />
-			</b-button>
-			<hr />
-		</div>
+		<BotaoCrud
+			:desativarModoIncluir="modo === 'opcoes'"
+			:desativarModoOpcoes="modo === 'incluir'"
+			:clicarObter="obter"
+			:clicarIncluir="incluir"
+			:clicarAtualizar="atualizar"
+			:clicarRemover="remover"
+		/>
+
 		<b-form>
 			<b-row>
-				<b-col md="3" sm="3">
+				<b-col md="2" sm="2">
 					<b-form-group label="Código" label-for="unidade-id">
 						<b-form-input
 							v-model="unidade.id"
@@ -55,7 +29,7 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="4" sm="12">
-					<b-form-group label="Descrição" label-for="unidade-nome">
+					<b-form-group label="Unidade" label-for="unidade-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							v-model="unidade.nome"
@@ -113,7 +87,7 @@
 					},
 					{
 						key: "nome",
-						label: "Descrição",
+						label: "Unidade",
 						sortable: true,
 					},
 					{

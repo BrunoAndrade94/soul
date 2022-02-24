@@ -5,42 +5,14 @@
 			titulo="Espécies"
 			sub="Aqui pode alterar as informações das espécies"
 		/>
-
-		<div class="butao-crud">
-			<b-button
-				class="mr-1"
-				variant="success"
-				v-show="modo === 'incluir'"
-				v-on:click="obter"
-			>
-				<i class="fa-solid fa-magnifying-glass" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="primary"
-				v-show="modo === 'incluir'"
-				@click="incluir"
-			>
-				<i class="fa-solid fa-download" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="warning"
-				v-show="modo === 'opcoes'"
-				@click="atualizar"
-			>
-				<i class="fa-solid fa-highlighter" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="danger"
-				v-show="modo === 'opcoes'"
-				@click="excluir"
-			>
-				<i class="fa-solid fa-trash-can" />
-			</b-button>
-			<hr />
-		</div>
+		<BotaoCrud
+			:desativarModoIncluir="modo === 'opcoes'"
+			:desativarModoOpcoes="modo === 'incluir'"
+			:clicarObter="obter"
+			:clicarIncluir="incluir"
+			:clicarAtualizar="atualizar"
+			:clicarRemover="remover"
+		/>
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
@@ -55,7 +27,7 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="4" sm="12">
-					<b-form-group label="Descrição" label-for="especie-nome">
+					<b-form-group label="Espécie" label-for="especie-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							id="especie-nome"
@@ -96,10 +68,10 @@
 	import { mapState } from "vuex";
 	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
-	import Botao from "../Botao.vue";
+	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Especies",
-		components: { TituloPagina, Botao },
+		components: { TituloPagina, BotaoCrud },
 		computed: mapState(["especie"]),
 		data: function () {
 			return {
@@ -113,7 +85,7 @@
 					},
 					{
 						key: "nome",
-						label: "Descrição",
+						label: "Espécie",
 						sortable: true,
 					},
 					{

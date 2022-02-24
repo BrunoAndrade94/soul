@@ -5,41 +5,15 @@
 			titulo="Produtos"
 			sub="Aqui pode alterar as informações dos produtos"
 		/>
-		<div class="botao-crud">
-			<b-button
-				class="mr-1"
-				variant="success"
-				@click="obter"
-				:disabled="modo === 'opcoes'"
-			>
-				<i class="fa-solid fa-magnifying-glass" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="primary"
-				@click="incluir"
-				:disabled="modo === 'opcoes'"
-			>
-				<i class="fa-solid fa-download" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="warning"
-				@click="atualizar"
-				:disabled="modo === 'incluir'"
-			>
-				<i class="fa-solid fa-highlighter" />
-			</b-button>
-			<b-button
-				class="mr-1"
-				variant="danger"
-				@click="excluir"
-				:disabled="modo === 'incluir'"
-			>
-				<i class="fa-solid fa-trash-can" />
-			</b-button>
-			<hr />
-		</div>
+
+		<BotaoCrud
+			:desativarModoIncluir="modo === 'opcoes'"
+			:desativarModoOpcoes="modo === 'incluir'"
+			:clicarObter="obter"
+			:clicarIncluir="incluir"
+			:clicarAtualizar="atualizar"
+			:clicarRemover="remover"
+		/>
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
@@ -68,7 +42,7 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col md="2" sm="2">
+				<b-col class="d-none d-sm-block" md="2" sm="2">
 					<b-form-group label="Código" label-for="especie">
 						<b-form-input
 							required
@@ -95,7 +69,7 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col md="2" sm="2">
+				<b-col class="d-none d-sm-block" md="2" sm="2">
 					<b-form-group label="Código" label-for="unidade">
 						<b-form-input
 							required
@@ -151,11 +125,14 @@
 <script>
 	import axios from "axios";
 	// import { mapState } from "vuex";
-	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
+	// import validacao from "../../../../../backend/api/config/validacoes.js";
+	import v from "@/validarGlobal";
+	import g from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
+	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Produtos",
-		components: { TituloPagina },
+		components: { TituloPagina, BotaoCrud },
 		// computed: {
 		// 	return: mapState({
 		// 		unidade: (state) => state.unidade,
@@ -174,6 +151,7 @@
 					{
 						key: "id",
 						label: "#",
+						class: "d-none d-sm-block",
 					},
 					{
 						key: "nome",
@@ -223,7 +201,7 @@
 			carregarProdutos() {
 				this.limpar();
 				// OBTEM OS PRODUTOS COM JOIN EM ESPECIES E UNIDADE
-				axios.get(`${baseApi}produtos`).then((produtos) => {
+				axios.get(`${g.baseApi}produtos`).then((produtos) => {
 					this.produtos = produtos.data;
 					this.carregarEspecies();
 					this.carregarUnidades();
@@ -239,17 +217,23 @@
 				this.unidades = {};
 			},
 			incluir() {
-				this.produto.idEspecie = this.especie;
-				this.produto.idUnidade = this.unidade;
+				if (!v.objetoVazio(this.especie)) {
+					this.produto.idEspecie = this.especie;
+				}
+				if (!v.objetoVazio(this.unidade)) {
+					this.produto.idUnidade = this.unidade;
+				}
 
 				axios
-					.post(`${baseApi}produtos`, this.produto)
+					.post(`${g.baseApi}produtos`, this.produto)
 					.then(() => {
-						mostrarSucesso(`Produto: ${this.produto.nome} incluído com sucesso!`);
+						g.mostrarSucesso(
+							`Produto: ${this.produto.nome} incluído com sucesso!`
+						);
 						this.limpar();
 						this.carregarDados();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 			atualizar() {
 				// remove o nome da especie e unidade
@@ -257,45 +241,48 @@
 				delete this.produto.nomeUnidade;
 
 				// injeta novos ids especie e unidade
-				if (Number(this.especie)) {
+				if (v.éNumero(this.especie)) {
 					this.produto.idEspecie = this.especie;
-				} else if (Number(this.unidade)) {
+				}
+				if (v.éNumero(this.unidade)) {
 					this.produto.idUnidade = this.unidade;
 				}
 
 				axios
-					.put(`${baseApi}produtos/${this.produto.id}`, this.produto)
+					.put(`${g.baseApi}produtos/${this.produto.id}`, this.produto)
 					.then(() => {
-						mostrarSucesso(
+						g.mostrarSucesso(
 							`Produto: ${this.produto.nome} atualizado com sucesso!`
 						);
 						this.limpar();
 						this.carregarDados();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 			obter() {},
 			excluir() {
 				axios
-					.delete(`${baseApi}produtos/${this.produto.id}`, this.produto)
+					.delete(`${g.baseApi}produtos/${this.produto.id}`, this.produto)
 					.then(() => {
-						mostrarSucesso(`Produto: ${this.produto.nome} removido com sucesso!`);
+						g.mostrarSucesso(
+							`Produto: ${this.produto.nome} removido com sucesso!`
+						);
 						this.limpar();
 						this.carregarDados();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 
 			// ==============================
 
 			carregarEspecies() {
-				axios.get(`${baseApi}especies`).then((especies) => {
+				axios.get(`${g.baseApi}especies`).then((especies) => {
 					this.especies = especies.data;
 				});
 			},
 
 			carregarUnidades() {
-				axios.get(`${baseApi}unidades`).then((unidades) => {
+				axios.get(`${g.baseApi}unidades`).then((unidades) => {
 					this.unidades = unidades.data;
 				});
 			},

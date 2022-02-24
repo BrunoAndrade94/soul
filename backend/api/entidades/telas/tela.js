@@ -63,5 +63,20 @@ module.exports = (app) => {
 			.catch((erro) => res.status(500).send(erro));
 	};
 
-	return { incluir, atualizar, obter };
+	const obterJoin = (req, res) => {
+		app.db(tabela.telas)
+			.select(
+				"telas.id",
+				"telas.nome",
+				"modulos.id as moduloId",
+				"modulos.nome as moduloNome"
+			)
+			.whereNull("telas.removidoEm")
+			.orderBy(coluna.nome)
+			.join(tabela.modulos, "telas.idModulo", "=", "modulos.id")
+			.then((telas) => res.json(telas))
+			.catch((erro) => res.status(500).send(erro));
+	};
+
+	return { incluir, atualizar, obter, obterJoin };
 };
