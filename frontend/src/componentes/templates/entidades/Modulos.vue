@@ -40,15 +40,11 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col md="2" sm="12">
-					<b-form-group label="-- SEM USO --">
-						<b-form-input :readonly="true" placeholder="#"></b-form-input>
-					</b-form-group>
-				</b-col>
 				<b-col md="6" sm="12">
 					<b-form-group label="Caminho" label-for="modulo-nome">
 						<b-form-input
 							id="modulo-nome"
+							readonly="true"
 							type="text"
 							v-model="modulo.caminho"
 							placeholder="Caminho do módulo..."
@@ -57,7 +53,7 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col md="2" sm="2">
+				<b-col class="d-none d-sm-block" md="2" sm="12">
 					<b-form-group label="Código" label-for="maeId">
 						<b-form-input
 							required
@@ -72,10 +68,10 @@
 				</b-col>
 				<div></div>
 				<b-col md="6" sm="12">
-					<b-form-group label="Módulo Mãe" label-for="modulo-maeId">
+					<b-form-group label="Módulo Mãe" label-for="modulo-mae">
 						<b-form-select
 							required
-							id="modulo-maeId"
+							id="modulo-mae"
 							v-model="modulo"
 							:options="modulos"
 							value-field="id"
@@ -126,11 +122,11 @@
 				modulo: {},
 				modulos: [],
 				campos: [
-					{ key: "id", label: "#" },
+					{ key: "id", label: "#", class: "d-none d-sm-block" },
 					{ key: "nome", label: "Descrição", sortable: true },
 					{
 						key: "maeId",
-						label: "Mãe",
+						label: "#",
 					},
 					{ key: "caminho", label: "Caminho" },
 					{ key: "acoes", label: "Opções" },
@@ -151,6 +147,7 @@
 				this.modo = modo;
 				this.modulo = modulo;
 				this.modulos = [this.modulo];
+				// this.modulos.caminho = [this.modulo.caminho];
 			},
 			carregarModulos() {
 				this.limpar();
@@ -163,11 +160,15 @@
 			incluir() {
 				// ESTÁ COMO INDEFINIDO, VER MODEL DO INPUT
 				// DEPOIS DE APRENDER SOBRE STORE, MUDAR AQUI
+				console.log(this.modulo.mae);
+
+				this.modulo.maeId = this.modulo.id;
+				this.modulo.nome = this.modulo.nome;
+
 				axios
 					.post(`${g.baseApi}modulos`, this.modulo)
 					.then(() => {
 						g.mostrarSucesso(`Módulo: ${this.modulo.nome} incluído com sucesso!`);
-						// this.limpar();
 						this.carregarModulos();
 					})
 					.catch(g.mostrarErro);
@@ -186,6 +187,7 @@
 					.catch(g.mostrarErro);
 			},
 			remover() {
+				console.log(this.modulo.id);
 				axios
 					.delete(`${g.baseApi}modulos/${this.modulo.id}`, this.modulo)
 					.then(() => {

@@ -192,6 +192,8 @@
 
 				this.produtos = [this.produto];
 
+				// this.especies = ["nada"];
+
 				// this.especie.id = [this.produto.idEspecie];
 				// this.unidade = [this.unidades];
 			},
@@ -260,7 +262,7 @@
 					.catch(g.mostrarErro);
 			},
 			obter() {},
-			excluir() {
+			remover() {
 				axios
 					.delete(`${g.baseApi}produtos/${this.produto.id}`, this.produto)
 					.then(() => {
@@ -272,9 +274,9 @@
 					})
 					.catch(g.mostrarErro);
 			},
-
 			// ==============================
-
+			// ==============================
+			// ==============================
 			carregarEspecies() {
 				axios.get(`${g.baseApi}especies`).then((especies) => {
 					this.especies = especies.data;

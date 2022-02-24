@@ -156,7 +156,7 @@ module.exports = (app) => {
 				.whereNot({ id: usuario.id })
 				.whereNull(coluna.removidoEm)
 				.first();
-			console.log(verificarUsuarioDeUsuario);
+
 			if (verificarUsuarioDeUsuario) {
 				if (usuario.usuario === verificarUsuarioDeUsuario.usuario) {
 					validacao.naoExisteOuErro(

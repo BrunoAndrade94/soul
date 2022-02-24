@@ -28,7 +28,7 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="12">
+				<b-col md="4" sm="10">
 					<b-form-group label="Unidade" label-for="unidade-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
@@ -68,7 +68,7 @@
 <script>
 	import axios from "axios";
 	// import { mapState } from "vuex";
-	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
+	import g from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
 	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
@@ -100,7 +100,11 @@
 		methods: {
 			clicou(evento) {
 				if (evento.which === 13) {
-					this.incluir();
+					if (this.modo === "incluir") {
+						this.incluir();
+					} else {
+						this.atualizar();
+					}
 				}
 			},
 			opcoesUnidade(unidade, modo) {
@@ -110,13 +114,13 @@
 			},
 			carregarUnidade() {
 				this.limpar();
-				axios.get(`${baseApi}unidades/${this.unidade.id}`).then((unidade) => {
+				axios.get(`${g.baseApi}unidades/${this.unidade.id}`).then((unidade) => {
 					this.unidades = unidade.data;
 				});
 			},
 			carregarUnidades() {
 				this.limpar();
-				axios.get(`${baseApi}unidades`).then((unidades) => {
+				axios.get(`${g.baseApi}unidades`).then((unidades) => {
 					this.unidades = unidades.data;
 				});
 			},
@@ -127,31 +131,39 @@
 			obter() {},
 			incluir() {
 				axios
-					.post(`${baseApi}unidades`, this.unidade)
+					.post(`${g.baseApi}unidades`, this.unidade)
 					.then(() => {
-						mostrarSucesso(`Unidade: ${this.unidade.nome} incluída com sucesso!`);
+						g.mostrarSucesso(
+							`Unidade: ${this.unidade.nome} incluída com sucesso!`
+						);
 						this.limpar();
 						this.carregarUnidades();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 			atualizar() {
 				axios
-					.put(`${baseApi}unidades/${this.unidade.id}`, this.unidade)
+					.put(`${g.baseApi}unidades/${this.unidade.id}`, this.unidade)
 					.then(() => {
-						mostrarSucesso(
+						g.mostrarSucesso(
 							`Unidade: ${this.unidade.nome} atualizada com sucesso!`
 						);
 						this.limpar();
 						this.carregarUnidades();
-					});
+					})
+					.catch(g.mostrarErro);
 			},
-			excluir() {
-				axios.delete(`${baseApi}unidades/${this.unidade.id}`).then(() => {
-					mostrarSucesso(`Unidade: ${this.unidade.nome} excluída com sucesso!`);
-					this.limpar();
-					this.carregarUnidades();
-				});
+			remover() {
+				axios
+					.delete(`${g.baseApi}unidades/${this.unidade.id}`)
+					.then(() => {
+						g.mostrarSucesso(
+							`Unidade: ${this.unidade.nome} excluída com sucesso!`
+						);
+						this.limpar();
+						this.carregarUnidades();
+					})
+					.catch(g.mostrarErro);
 			},
 		},
 		mounted() {

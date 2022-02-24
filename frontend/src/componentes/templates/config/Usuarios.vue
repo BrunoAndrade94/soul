@@ -1,13 +1,18 @@
 <template>
 	<div class="usuarios">
 		<b-card no-body>
-			<TituloPagina
-				icone="fa fa-cogs"
-				titulo=" Configurações do Usuário"
-				:sub="usuario.nome"
-			/>
 			<b-tabs pills card>
 				<b-tab title="Usuário" active>
+					<TituloPagina
+						icone="fa fa-cogs"
+						titulo="Usuário"
+						:sub="`Aqui pode alterar as informaçõe de ${usuario.nome}!`"
+					/>
+					<BotaoCrud
+						:desativarModoIncluir="modo === 'opcoes'"
+						:clicarAtualizar="atualizar"
+						:apenasAtualizar="true"
+					/>
 					<b-form>
 						<input id="usuario-id" type="hidden" v-model="usuario.id" />
 						<b-row>
@@ -17,6 +22,7 @@
 										id="usuario-usuario"
 										type="text"
 										v-model="usuario.usuario"
+										@keydown.enter.native="clicou"
 										required
 										placeholder="Informe o usuário..."
 									/>
@@ -29,6 +35,7 @@
 									<b-form-input
 										id="usuario-nome"
 										type="text"
+										@keydown.enter.native="clicou"
 										v-model="usuario.nome"
 										required
 										placeholder="Informe o nome..."
@@ -40,6 +47,7 @@
 									<b-form-input
 										id="usuario-email"
 										type="email"
+										@keydown.enter.native="clicou"
 										v-model="usuario.email"
 										required
 										placeholder="Informe o e-mail..."
@@ -60,6 +68,7 @@
 									<b-form-input
 										id="usuario-senha"
 										type="password"
+										@keydown.enter.native="clicou"
 										v-model="usuario.senha"
 										required
 										placeholder="Informe a senha..."
@@ -74,6 +83,7 @@
 									<b-form-input
 										id="usuario-confirmacaoSenha"
 										type="password"
+										@keydown.enter.native="clicou"
 										v-model="usuario.confirmacaoSenha"
 										required
 										placeholder="Confirme a senha..."
@@ -81,7 +91,6 @@
 								</b-form-group>
 							</b-col>
 						</b-row>
-						<hr />
 					</b-form>
 				</b-tab>
 			</b-tabs>
@@ -94,27 +103,35 @@
 	import g from "@/global";
 	import { mapState } from "vuex";
 	import TituloPagina from "../TituloPagina.vue";
+	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Usuarios",
-		components: { TituloPagina },
+		components: { TituloPagina, BotaoCrud },
 		computed: mapState(["usuario"]),
 		data: function () {
 			return {
+				modo: "opcoes",
 				alterar: false,
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (evento.which === 13) {
+					this.atualizar();
+				}
+			},
 			atualizar() {
 				axios
 					.put(`${g.baseApi}usuario/${this.usuario.id}`, this.usuario)
 					.then(() => {
 						g.mostrarSucesso(`${this.usuario.nome} atualizado com sucesso!`);
-						//this.limparSenha();
+						this.limparSenha();
 					})
 					.catch(g.mostrarErro);
 			},
 			limparSenha() {
-				// this.usuario = {};
+				this.usuario.senha = "";
+				this.usuario.confirmacaoSenha = "";
 			},
 		},
 		mounted() {

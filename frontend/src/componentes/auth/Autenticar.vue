@@ -110,6 +110,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		background-color: #708eb6;
 	}
 	.autenticar-modal {
 		background-color: #fff;

@@ -1,6 +1,6 @@
 module.exports = (app) => {
-	const notificacao = app.api.config.notificacoes;
-	const validacao = app.api.config.validacoes;
+	const n = app.api.config.notificacoes;
+	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
 	const coluna = app.api.entidades.db.colunas;
 
@@ -8,31 +8,19 @@ module.exports = (app) => {
 		try {
 			const produto = { ...req.body };
 
-			validacao.existeOuErro(produto.nome, notificacao.nomeNaoInformado);
-			validacao.existeOuErro(
-				produto.idEspecie,
-				notificacao.especieNaoInformada
-			);
-			validacao.existeOuErro(
-				produto.idUnidade,
-				notificacao.unidadeNaoInformada
-			);
+			v.existeOuErro(produto.nome, n.nomeNaoInformado);
+			v.existeOuErro(produto.idEspecie, n.especieNaoInformada);
+			v.existeOuErro(produto.idUnidade, n.unidadeNaoInformada);
 
 			const verificarSeExisteEspecie = await app
 				.db(tabela.especies)
 				.where({ id: produto.idEspecie });
-			validacao.existeOuErro(
-				verificarSeExisteEspecie,
-				notificacao.especieNaoEncontrada
-			);
+			v.existeOuErro(verificarSeExisteEspecie, n.especieNaoEncontrada);
 
 			const verificarSeExisteUnidade = await app
 				.db(tabela.unidades)
 				.where({ id: produto.idUnidade });
-			validacao.existeOuErro(
-				verificarSeExisteUnidade,
-				notificacao.unidadeNaoEncontrada
-			);
+			v.existeOuErro(verificarSeExisteUnidade, n.unidadeNaoEncontrada);
 
 			if (produto.id === null) delete produto.id;
 
@@ -100,14 +88,13 @@ module.exports = (app) => {
 		try {
 			const produto = { ...req.body };
 			if (!produto.id) produto.id = req.params.id;
-
-			produto.removidoEm = new Date();
+			console.log(produto);
 			const removido = await app
 				.db(tabela.produtos)
-				.update(produto)
+				.update({ removidoEm: new Date() })
 				.where({ id: produto.id });
 
-			validacao.existeOuErro(removido, notificacao.produtoNaoEncontrado);
+			v.existeOuErro(removido, n.produtoNaoEncontrado);
 			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);

@@ -1,16 +1,13 @@
 module.exports = (app) => {
-	const notificacao = app.api.config.notificacoes;
-	const validacao = app.api.config.validacoes;
+	const n = app.api.config.notificacoes;
+	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
 	const coluna = app.api.entidades.db.colunas;
 
 	const incluir = (req, res) => {
 		try {
 			const unidade = { ...req.body };
-			validacao.existeOuErro(
-				unidade.nome,
-				notificacao.unidadeNaoInformada
-			);
+			v.existeOuErro(unidade.nome, n.unidadeNaoInformada);
 
 			if (unidade.id === null) delete unidade.id;
 
@@ -34,7 +31,7 @@ module.exports = (app) => {
 
 	const obterPorId = (req, res) => {
 		try {
-			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			v.numeroOuErro(req.params.id, n.idInvalido);
 
 			app.db(tabela.unidades)
 				.select(coluna.id, coluna.nome)
@@ -56,16 +53,13 @@ module.exports = (app) => {
 				.db(tabela.produtos)
 				.where({ idUnidade: unidade.id })
 				.whereNull(coluna.removidoEm);
-			validacao.naoExisteOuErro(
-				produto,
-				notificacao.unidadePossuiProduto
-			);
+			v.naoExisteOuErro(produto, n.unidadePossuiProduto);
 
-			const apagados = await app
+			const removida = await app
 				.db(tabela.unidades)
 				.update({ removidoEm: new Date() })
 				.where({ id: unidade.id });
-			validacao.existeOuErro(apagados, notificacao.unidadeNaoEncontrada);
+			v.existeOuErro(removida, n.unidadeNaoEncontrada);
 
 			res.status(204).send();
 		} catch (erro) {
@@ -75,26 +69,14 @@ module.exports = (app) => {
 
 	const atualizar = async (req, res) => {
 		try {
-			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			v.numeroOuErro(req.params.id, n.idInvalido);
 			const unidade = { ...req.body };
 			unidade.id = req.params.id;
-
 			const verificarSeExisteUnidade = await app
 				.db(tabela.unidades)
 				.where({ id: unidade.id })
 				.whereNull(coluna.removidoEm);
-			validacao.existeOuErro(
-				verificarSeExisteUnidade,
-				notificacao.unidadeNaoEncontrada
-			);
-
-			const verificarSeExisteProduto = await app
-				.db(tabela.produtos)
-				.where({ idUnidade: unidade.id });
-			validacao.naoExisteOuErro(
-				verificarSeExisteProduto,
-				notificacao.unidadePossuiProduto
-			);
+			v.existeOuErro(verificarSeExisteUnidade, n.unidadeNaoEncontrada);
 
 			unidade.alteradoEm = new Date();
 			app.db(tabela.unidades)

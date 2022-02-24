@@ -27,7 +27,7 @@
 			</b-button>
 			<b-button
 				class="remover"
-				:disabled="desativarModoOpcoes"
+				:disabled="desativarModoOpcoes || apenasAtualizar"
 				@click="clicarRemover"
 				variant="danger"
 			>
@@ -48,6 +48,7 @@
 			clicarIncluir: String,
 			clicarAtualizar: String,
 			clicarRemover: String,
+			apenasAtualizar: Boolean,
 		},
 	};
 </script>

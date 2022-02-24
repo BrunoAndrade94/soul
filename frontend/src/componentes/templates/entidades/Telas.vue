@@ -39,7 +39,7 @@
 				</b-col>
 			</b-row>
 			<b-row>
-				<b-col md="2" sm="2">
+				<b-col class="d-none d-sm-block" md="2" sm="12">
 					<b-form-group label="Código" label-for="modulo-id">
 						<b-form-input
 							required
@@ -137,6 +137,8 @@
 				this.modo = modo;
 				this.tela = modulo;
 				this.telas = [this.tela];
+
+				this.modulos = [this.modulo];
 			},
 			carregarTelas() {
 				this.limpar();
@@ -147,6 +149,7 @@
 			},
 			obter() {},
 			incluir() {
+				this.tela.idModulo = this.modulo;
 				axios
 					.post(`${g.baseApi}telas`, this.tela)
 					.then(() => {
@@ -168,17 +171,18 @@
 			},
 			remover() {
 				axios
-					.delete(`${g.baseApi}telas/${this.tela.id}`, this.tela)
+					.delete(`${g.baseApi}telas/${this.tela.id}`)
 					.then(() => {
 						g.mostrarSucesso(`Tela: ${this.tela.nome} removida com sucesso!`);
 						this.carregarTelas();
 					})
-					.catch(g.mostrarErro);
+					.catch(g.mostrarErro("generico"));
 			},
 			limpar(modo = "incluir") {
 				this.modo = modo;
 				this.tela = {};
 				this.telas = {};
+				this.modulos = {};
 			},
 			//=====================
 			//=====================

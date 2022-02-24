@@ -17,6 +17,7 @@ module.exports = (app) => {
 	const especieJaCadastrada = "Espécie já cadastrada!";
 	const especieNaoEncontrada = "Espécie não encontrada!";
 	const especieNaoInformada = "Espécie não informada!";
+	const especiePossuiProduto = "Espécie possuí produto!";
 
 	const unidadeNaoEncontrada = "Unidade não encontrada!";
 	const unidadeJaCadastrada = "Unidade já cadastrada!";
@@ -64,5 +65,6 @@ module.exports = (app) => {
 		especieJaCadastrada,
 		especieNaoEncontrada,
 		especieNaoInformada,
+		especiePossuiProduto,
 	};
 };

@@ -19,13 +19,13 @@
 		background-color: #ddd;
 		color: #333;
 
-		align-content: left;
+		align-content: right;
 		display: flex;
 		align-items: center;
 		justify-content: right;
 		padding-right: 23px;
 	}
 	.rodape i {
-		color: red;
+		color: rgb(0, 255, 21);
 	}
 </style>

@@ -14,7 +14,7 @@
 	.conteudo {
 		grid-area: content;
 		/* background-color: #d1cccc; */
-		background-color: #5f5555;
+		background-color: #beb1b1;
 		padding: 20px;
 	}
 </style>

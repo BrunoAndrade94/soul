@@ -7,6 +7,7 @@ module.exports = (app) => {
 	const incluir = async (req, res) => {
 		try {
 			const tela = { nome: req.body.nome, idModulo: req.body.idModulo };
+
 			validacao.existeOuErro(tela.nome, notificacao.nomeNaoInformado);
 			validacao.existeOuErro(tela.idModulo, "Módulo não informado!");
 

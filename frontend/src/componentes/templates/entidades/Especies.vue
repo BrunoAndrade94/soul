@@ -26,7 +26,7 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="12">
+				<b-col md="4" sm="10">
 					<b-form-group label="Espécie" label-for="especie-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
@@ -65,14 +65,14 @@
 
 <script>
 	import axios from "axios";
-	import { mapState } from "vuex";
-	import { baseApi, mostrarErro, mostrarSucesso } from "@/global";
+	// import { mapState } from "vuex";
+	import g from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
 	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Especies",
 		components: { TituloPagina, BotaoCrud },
-		computed: mapState(["especie"]),
+		// computed: mapState(["especie"]),
 		data: function () {
 			return {
 				modo: "incluir",
@@ -108,13 +108,13 @@
 			},
 			carregarEspecie() {
 				this.limpar();
-				axios.get(`${baseApi}especies/${this.especie.id}`).then((especie) => {
+				axios.get(`${g.baseApi}especies/${this.especie.id}`).then((especie) => {
 					this.especies = especie.data;
 				});
 			},
 			carregarEspecies() {
 				this.limpar();
-				axios.get(`${baseApi}especies`).then((especies) => {
+				axios.get(`${g.baseApi}especies`).then((especies) => {
 					this.especies = especies.data;
 				});
 			},
@@ -124,37 +124,41 @@
 			},
 			incluir() {
 				axios
-					.post(`${baseApi}especies`, this.especie)
+					.post(`${g.baseApi}especies`, this.especie)
 					.then(() => {
-						mostrarSucesso(`Espécie: ${this.especie.nome} incluída com sucesso!`);
-						this.carregarEspecies();
-					})
-					.catch(mostrarErro);
-			},
-			atualizar() {
-				axios
-					.put(`${baseApi}especies/${this.especie.id}`, this.especie)
-					.then(() => {
-						mostrarSucesso(
-							`Espécie: ${this.especie.nome} atualizda com sucesso!`
+						g.mostrarSucesso(
+							`Espécie: ${this.especie.nome} incluída com sucesso!`
 						);
 						this.carregarEspecies();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
+			},
+			atualizar() {
+				axios
+					.put(`${g.baseApi}especies/${this.especie.id}`, this.especie)
+					.then(() => {
+						g.mostrarSucesso(
+							`Espécie: ${this.especie.nome} atualizada com sucesso!`
+						);
+						this.carregarEspecies();
+					})
+					.catch(g.mostrarErro);
 			},
 			obter(especie) {
-				axios.get(`${baseApi}especie`, especie).then((especies) => {
+				axios.get(`${g.baseApi}especie`, especie).then((especies) => {
 					this.especies = especies.data;
 				});
 			},
-			excluir() {
+			remover() {
 				axios
-					.delete(`${baseApi}especies/${this.especie.id}`)
+					.delete(`${g.baseApi}especies/${this.especie.id}`)
 					.then(() => {
-						mostrarSucesso(`Espécie: ${this.especie.nome} excluída com sucesso!`);
+						g.mostrarSucesso(
+							`Espécie: ${this.especie.nome} excluída com sucesso!`
+						);
 						this.carregarEspecies();
 					})
-					.catch(mostrarErro);
+					.catch(g.mostrarErro);
 			},
 		},
 		mounted() {

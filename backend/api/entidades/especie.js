@@ -1,13 +1,13 @@
 module.exports = (app) => {
-	const notificacao = app.api.config.notificacoes;
-	const validacao = app.api.config.validacoes;
+	const n = app.api.config.notificacoes;
+	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
 	const coluna = app.api.entidades.db.colunas;
 
 	const incluir = (req, res) => {
 		try {
 			const especie = { ...req.body };
-			validacao.existeOuErro(especie.nome, notificacao.nomeNaoInformado);
+			v.existeOuErro(especie.nome, n.nomeNaoInformado);
 
 			if (especie.id === null) delete especie.id;
 
@@ -22,7 +22,7 @@ module.exports = (app) => {
 
 	const atualizar = async (req, res) => {
 		try {
-			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			v.numeroOuErro(req.params.id, n.idInvalido);
 			const especie = { ...req.body };
 			especie.id = req.params.id;
 
@@ -30,18 +30,7 @@ module.exports = (app) => {
 				.db(tabela.especies)
 				.where({ id: especie.id })
 				.whereNull(coluna.removidoEm);
-			validacao.existeOuErro(
-				verificarSeExisteEspecie,
-				notificacao.especieNaoEncontrada
-			);
-
-			const verificarSeExisteProduto = await app
-				.db(tabela.produtos)
-				.where({ idEspecie: especie.id ? especie.id : 0 });
-			validacao.naoExisteOuErro(
-				verificarSeExisteProduto,
-				notificacao.especiePossuiProduto
-			);
+			v.existeOuErro(verificarSeExisteEspecie, n.especieNaoEncontrada);
 
 			especie.alteradoEm = new Date();
 			app.db(tabela.especies)
@@ -67,11 +56,11 @@ module.exports = (app) => {
 		try {
 			const especie = { ...req.body };
 			if (req.params.id) {
-				validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+				v.numeroOuErro(req.params.id, n.idInvalido);
 				especie.id = req.params.id;
 			}
 
-			validacao.existeOuErro(especie.nome, notificacao.nomeNaoInformado);
+			v.existeOuErro(especie.nome, n.nomeNaoInformado);
 
 			app.db(tabela.especies)
 				.select(coluna.id, coluna.nome)
@@ -89,17 +78,21 @@ module.exports = (app) => {
 			const especie = { ...req.body };
 			if (!especie.id) especie.id = req.params.id;
 
-			especie.removidoEm = new Date();
+			const verificarSeExisteProduto = await app
+				.db(tabela.produtos)
+				.where({ idEspecie: especie.id })
+				.whereNull(coluna.removidoEm);
+			v.naoExisteOuErro(verificarSeExisteProduto, n.especiePossuiProduto);
+
 			const removida = await app
 				.db(tabela.especies)
-				.update(especie)
+				.update({ removidoEm: new Date() })
 				.where({ id: especie.id });
-
-			validacao.existeOuErro(removida, notificacao.especieNaoEncontrada);
+			v.existeOuErro(removida, n.especieNaoEncontrada);
 
 			res.status(204).send();
 		} catch (erro) {
-			res.status(400).send();
+			res.status(400).send(erro);
 		}
 	};
 
