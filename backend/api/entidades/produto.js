@@ -6,7 +6,11 @@ module.exports = (app) => {
 
 	const incluir = async (req, res) => {
 		try {
-			const produto = { ...req.body };
+			const produto = {
+				nome: req.body.nome,
+				idEspecie: req.body.idEspecie,
+				idUnidade: req.body.idUnidade,
+			};
 
 			v.existeOuErro(produto.nome, n.nomeNaoInformado);
 			v.existeOuErro(produto.idEspecie, n.especieNaoInformada);
@@ -52,7 +56,12 @@ module.exports = (app) => {
 
 	const atualizar = (req, res) => {
 		try {
-			const produto = { ...req.body };
+			const produto = {
+				id: req.body.id,
+				nome: req.body.nome,
+				idEspecie: req.body.idEspecie,
+				idUnidade: req.body.idUnidade,
+			};
 			if (!produto.id) produto.id = req.params.id;
 
 			produto.alteradoEm = new Date();
@@ -86,7 +95,12 @@ module.exports = (app) => {
 
 	const remover = async (req, res) => {
 		try {
-			const produto = { ...req.body };
+			const produto = {
+				id: req.body.id,
+				nome: req.body.nome,
+				idEspecie: req.body.idEspecie,
+				idUnidade: req.body.idUnidade,
+			};
 			if (!produto.id) produto.id = req.params.id;
 			console.log(produto);
 			const removido = await app

@@ -16,7 +16,7 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="especie-id">
+					<b-form-group label="Código:" label-for="especie-id">
 						<b-form-input
 							id="especie-id"
 							type="number"
@@ -26,8 +26,8 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Espécie" label-for="especie-nome">
+				<b-col md="10" sm="10">
+					<b-form-group label="* Espécie:" label-for="especie-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							id="especie-nome"
@@ -85,7 +85,7 @@
 					},
 					{
 						key: "nome",
-						label: "Espécie",
+						label: "Espécies",
 						sortable: true,
 					},
 					{

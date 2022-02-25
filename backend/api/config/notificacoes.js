@@ -17,7 +17,7 @@ module.exports = (app) => {
 	const especieJaCadastrada = "Espécie já cadastrada!";
 	const especieNaoEncontrada = "Espécie não encontrada!";
 	const especieNaoInformada = "Espécie não informada!";
-	const especiePossuiProduto = "Espécie possuí produto!";
+	const especiePossuiProduto = "Espécie possui produto!";
 
 	const unidadeNaoEncontrada = "Unidade não encontrada!";
 	const unidadeJaCadastrada = "Unidade já cadastrada!";
@@ -29,8 +29,9 @@ module.exports = (app) => {
 
 	const moduloAlterado = "Módulo alterado com sucesso!";
 	const moduloNaoEncontrado = "Módulo não encontrado!";
-	const moduloPossuiTelas = "Módulo possuí telas vinculadas!";
-	const moduloPossuiSubModulos = "Módulo possuí módulos vinculados!";
+	const moduloNaoPossuiCaminho = "Módulo não possui caminho!";
+	const moduloPossuiTelas = "Módulo possui telas vinculadas!";
+	const moduloPossuiSubModulos = "Módulo possui módulos vinculados!";
 
 	const nomeNaoInformado = "Nome não informado!";
 	const senhaNaoInformada = "Senha não informada!";
@@ -66,5 +67,6 @@ module.exports = (app) => {
 		especieNaoEncontrada,
 		especieNaoInformada,
 		especiePossuiProduto,
+		moduloNaoPossuiCaminho,
 	};
 };

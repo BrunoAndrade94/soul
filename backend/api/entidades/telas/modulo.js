@@ -1,6 +1,6 @@
 module.exports = (app) => {
-	const notificacao = app.api.config.notificacoes;
-	const validacao = app.api.config.validacoes;
+	const n = app.api.config.notificacoes;
+	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
 	const coluna = app.api.entidades.db.colunas;
 
@@ -8,17 +8,14 @@ module.exports = (app) => {
 		try {
 			const modulo = { ...req.body };
 			console.log(modulo);
-			validacao.existeOuErro(modulo.nome, notificacao.nomeNaoInformado);
+			v.existeOuErro(modulo.nome, n.nomeNaoInformado);
 
 			if (modulo.maeId !== undefined) {
 				const verificarModuloExiste = await app
 					.db(tabela.modulos)
 					.where({ id: modulo.maeId })
 					.whereNull(coluna.removidoEm);
-				validacao.existeOuErro(
-					verificarModuloExiste,
-					notificacao.moduloNaoEncontrado
-				);
+				v.existeOuErro(verificarModuloExiste, n.moduloNaoEncontrado);
 			}
 
 			app.db(tabela.modulos)
@@ -34,21 +31,15 @@ module.exports = (app) => {
 		try {
 			const modulo = { ...req.body };
 			modulo.id = req.params.id;
-			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
-
-			const verificarNoBanco = await app
-				.db(tabela.modulos)
-				.where({ id: modulo.id });
-			validacao.existeOuErro(verificarNoBanco, "erro");
+			v.numeroOuErro(modulo.id, n.idInvalido);
 
 			// SEM USO
-			const verificarVinculoComTelas = await app
+			const verificarVinculoComSubModulos = await app
 				.db(tabela.modulos)
 				.where({ maeId: modulo.id });
-
-			validacao.naoExisteOuErro(
-				verificarVinculoComTelas,
-				notificacao.moduloPossuiSubModulos
+			v.naoExisteOuErro(
+				verificarVinculoComSubModulos,
+				n.moduloPossuiSubModulos
 			);
 
 			modulo.alteradoEm = new Date();
@@ -56,7 +47,7 @@ module.exports = (app) => {
 				.db(tabela.modulos)
 				.update(modulo)
 				.where({ id: modulo.id });
-			validacao.existeOuErro(alterado, notificacao.moduloAlterado);
+			v.existeOuErro(alterado, n.moduloNaoEncontrado);
 
 			res.status(204).send();
 		} catch (erro) {
@@ -74,12 +65,52 @@ module.exports = (app) => {
 
 	const obterPorId = (req, res) => {
 		try {
-			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			v.numeroOuErro(req.params.id, n.idInvalido);
 			app.db(tabela.modulos)
 				.select(coluna.id, coluna.nome, coluna.maeId)
 				.where({ id: req.params.id })
 				.whereNull(coluna.removidoEm)
 				.then((modulo) => res.json(comCaminho(modulo)))
+				.catch((erro) => res.status(500).send(erro));
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
+	};
+
+	const obterModuloAnterior = async (req, res) => {
+		try {
+			v.numeroOuErro(req.params.id, n.idInvalido);
+
+			const verificarSeModuloExiste = await app
+				.db(tabela.modulos)
+				.where({ id: req.params.id });
+			v.existeOuErro(verificarSeModuloExiste, n.moduloNaoEncontrado);
+
+			// const obterIdMae = app
+			// 	.db(tabela.modulos)
+			// 	.select(coluna.maeId)
+			// 	.where({ id: req.params.id })
+			// 	.first();
+			// const verificarVinculoComSubModulos = app
+			// 	.db(tabela.modulos)
+			// 	.where({ id: obterIdMae });
+			// v.existeOuErro(
+			// 	verificarVinculoComSubModulos,
+			// 	n.moduloNaoPossuiCaminho
+			// );
+
+			const idMae = app
+				.db(tabela.modulos)
+				.select(coluna.maeId)
+				.where({ id: req.params.id })
+				.first();
+			console.log(idMae);
+
+			app.db(tabela.modulos)
+				// .select(coluna.nome)
+				.where({ id: idMae })
+				.first()
+				.then((moduloAnterior) => res.json(moduloAnterior))
 				.catch((erro) => res.status(500).send(erro));
 		} catch (erro) {
 			res.status(400).send(erro);
@@ -114,47 +145,29 @@ module.exports = (app) => {
 
 	const remover = async (req, res) => {
 		try {
+			v.numeroOuErro(modulo.id, n.idInvalido);
 			const modulo = {
 				id: req.params.id,
 			};
-			validacao.numeroOuErro(modulo.id, notificacao.idInvalido);
-
-			const verificarSeExisteModulo = await app
-				.db(tabela.modulos)
-				.where({ id: modulo.id })
-				.whereNull(coluna.removidoEm);
-
-			validacao.existeOuErro(
-				verificarSeExisteModulo,
-				notificacao.moduloNaoEncontrado
-			);
 
 			const verificarSubModulos = await app
 				.db(tabela.modulos)
 				.where({ maeId: modulo.id })
 				.whereNull(coluna.removidoEm);
-
-			validacao.naoExisteOuErro(
-				verificarSubModulos,
-				notificacao.moduloPossuiSubModulos
-			);
+			v.naoExisteOuErro(verificarSubModulos, n.moduloPossuiSubModulos);
 
 			const verificarTelaVinculada = await app
 				.db(tabela.telas)
 				.where({ idModulo: modulo.id })
 				.whereNull(coluna.removidoEm);
-
-			validacao.naoExisteOuErro(
-				verificarTelaVinculada,
-				notificacao.moduloPossuiTelas
-			);
+			v.naoExisteOuErro(verificarTelaVinculada, n.moduloPossuiTelas);
 
 			const deletada = await app
 				.db(tabela.modulos)
 				.update({ removidoEm: new Date() })
-				.where({ id: modulo.id });
-
-			validacao.existeOuErro(deletada, notificacao.moduloNaoEncontrado);
+				.where({ id: modulo.id })
+				.whereNull(coluna.removidoEm);
+			v.existeOuErro(deletada, n.moduloNaoEncontrado);
 			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);
@@ -164,24 +177,18 @@ module.exports = (app) => {
 	// NÃO ESTÁ FUNCIONANDO
 	const recuperarRemovido = async (req, res) => {
 		try {
-			validacao.numeroOuErro(req.params.id, notificacao.idInvalido);
+			v.numeroOuErro(req.params.id, n.idInvalido);
 
 			const verificarSeExisteModulo = await app
 				.db(tabela.modulos)
-				.where({ id: req.params.id })
-				.first();
-
-			validacao.existeOuErro(
-				verificarSeExisteModulo,
-				notificacao.moduloNaoEncontrado
-			);
+				.where({ id: req.params.id });
+			v.existeOuErro(verificarSeExisteModulo, n.moduloNaoEncontrado);
 
 			const recuperada = await app
 				.db(tabela.modulos)
 				.update({ removidoEm: null })
 				.where({ id: req.params.id });
-
-			validacao.existeOuErro(recuperada, notificacao.moduloNaoEncontrado);
+			v.existeOuErro(recuperada, n.moduloNaoEncontrado);
 			res.status(204).send();
 		} catch (erro) {
 			res.status(400).send(erro);
@@ -215,5 +222,6 @@ module.exports = (app) => {
 		obter,
 		obterPorId,
 		obterArvore,
+		obterModuloAnterior,
 	};
 };

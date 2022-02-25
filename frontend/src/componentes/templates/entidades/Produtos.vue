@@ -17,7 +17,7 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="produto">
+					<b-form-group label="Código:" label-for="produto">
 						<b-form-input
 							:readonly="true"
 							v-model="produto.id"
@@ -28,8 +28,8 @@
 						/>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Produto" label-for="produto">
+				<b-col md="10" sm="10">
+					<b-form-group label="* Produto:" label-for="produto">
 						<b-form-input
 							:autofocus="true"
 							id="produto-nome"
@@ -43,7 +43,7 @@
 			</b-row>
 			<b-row>
 				<b-col class="d-none d-sm-block" md="2" sm="2">
-					<b-form-group label="Código" label-for="especie">
+					<b-form-group label="Código:" label-for="especie">
 						<b-form-input
 							required
 							:readonly="true"
@@ -55,8 +55,8 @@
 						/>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Espécie" label-for="especie">
+				<b-col md="10" sm="10">
+					<b-form-group label="* Espécie:" label-for="especie">
 						<b-form-select
 							required
 							id="especie-nome"
@@ -70,7 +70,7 @@
 			</b-row>
 			<b-row>
 				<b-col class="d-none d-sm-block" md="2" sm="2">
-					<b-form-group label="Código" label-for="unidade">
+					<b-form-group label="Código:" label-for="unidade">
 						<b-form-input
 							required
 							:readonly="true"
@@ -83,8 +83,8 @@
 					</b-form-group>
 				</b-col>
 				<div></div>
-				<b-col md="4" sm="10">
-					<b-form-group label="Unidade" label-for="unidade">
+				<b-col md="10" sm="10">
+					<b-form-group label="* Unidade:" label-for="unidade">
 						<b-form-select
 							required
 							id="unidade-nome"
@@ -155,13 +155,13 @@
 					},
 					{
 						key: "nome",
-						label: "Descrição",
+						label: "Produtos",
 						sortable: true,
 					},
-					{ key: "nomeEspecie", label: "Espécie", sortable: true },
+					{ key: "nomeEspecie", label: "Espécies", sortable: true },
 					{
 						key: "nomeUnidade",
-						label: "Unidade",
+						label: "Unidades",
 						sortable: true,
 					},
 					{

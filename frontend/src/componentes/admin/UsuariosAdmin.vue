@@ -5,15 +5,24 @@
 			titulo="Usuários"
 			sub="Aqui pode gerenciar as informações dos usuários"
 		/>
+		<BotaoCrud
+			:desativarModoIncluir="modo === 'opcoes'"
+			:desativarModoOpcoes="modo === 'incluir'"
+			:clicarObter="obter"
+			:clicarIncluir="incluir"
+			:clicarAtualizar="atualizar"
+			:clicarRemover="remover"
+		/>
 		<b-form>
 			<input id="usuario-id" type="hidden" v-model="usuario.id" />
 			<b-row>
 				<b-col md="6" sm="12">
-					<b-form-group label="Nome:" label-for="usuario.nome">
+					<b-form-group label="* Nome:" label-for="usuario.nome">
 						<b-form-input
 							id="usuario-nome"
 							required
 							type="text"
+							@keydown.enter.native="clicou"
 							v-model="usuario.nome"
 							:readonly="modo === 'remover'"
 							placeholder="Informe o nome..."
@@ -21,12 +30,13 @@
 					</b-form-group>
 				</b-col>
 				<b-col md="6" sm="12">
-					<b-form-group label="E-mail:" label-for="usuario.email">
+					<b-form-group label="* E-mail:" label-for="usuario.email">
 						<b-form-input
 							id="usuario-email"
 							required
 							type="email"
 							v-model="usuario.email"
+							@keydown.enter.native="clicou"
 							:readonly="modo === 'remover'"
 							placeholder="Informe o e-mail..."
 						/>
@@ -36,12 +46,13 @@
 
 			<b-row>
 				<b-col md="6" sm="12">
-					<b-form-group label="Usuário:" label-for="usuario.usuario">
+					<b-form-group label="* Usuário:" label-for="usuario.usuario">
 						<b-form-input
 							id="usuario-usuario"
 							required
 							type="text"
 							v-model="usuario.usuario"
+							@keydown.enter.native="clicou"
 							:readonly="modo === 'remover'"
 							placeholder="Informe o usuário..."
 						/>
@@ -57,7 +68,7 @@
 				</b-form-checkbox>
 				<b-form-checkbox
 					v-model="alterar"
-					v-show="modo === 'atualizar'"
+					:disabled="modo === 'incluir'"
 					class="mt-4 mb-4 ml-4"
 				>
 					Alterar Senha
@@ -65,11 +76,12 @@
 			</b-row>
 			<b-row v-show="alterar || (modo === 'incluir' && !alterar)">
 				<b-col md="6" sm="12">
-					<b-form-group label="Senha:" label-for="usuario.senha">
+					<b-form-group label="* Senha:" label-for="usuario.senha">
 						<b-form-input
 							id="usuario-senha"
 							required
 							type="password"
+							@keydown.enter.native="clicou"
 							v-model="usuario.senha"
 							placeholder="Informe a senha..."
 						/>
@@ -77,13 +89,14 @@
 				</b-col>
 				<b-col md="6" sm="12">
 					<b-form-group
-						label="Confirmação de Senha:"
+						label="* Confirmação de Senha:"
 						label-for="usuario.confirmacaoSenha"
 					>
 						<b-form-input
 							id="usuario-confirmacaoSenha"
 							type="password"
 							v-model="usuario.confirmacaoSenha"
+							@keydown.enter.native="clicou"
 							required
 							placeholder="Confirme a senha..."
 						/>
@@ -91,38 +104,25 @@
 				</b-col>
 			</b-row>
 			<hr />
-			<b-button variant="primary" v-if="modo === 'incluir'" @click="incluir">
-				<i class="fa-solid fa-pen" /> Incluir
-			</b-button>
-			<b-button
-				variant="warning"
-				v-if="modo === 'atualizar'"
-				@click="atualizar"
-			>
-				<i class="fa-solid fa-highlighter" /> Atualizar
-			</b-button>
-			<b-button variant="danger" v-if="modo === 'remover'" @click="remover">
-				<i class="fa-solid fa-user-slash" /> Excluir
-			</b-button>
-			<b-button variant="danger" class="ml-2" @click="limpar('incluir')"
-				><i class="fa-solid fa-xmark" /> Cancelar</b-button
-			>
 		</b-form>
 		<hr />
 		<b-table hover striped :items="usuarios" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
-					variant="warning"
-					@click="carregarUsuario(data.item, 'atualizar')"
-					class="mr-2"
+					variant="info"
+					@click="opcoesUsuario(data.item)"
+					v-if="modo === 'incluir'"
+					class="mr-1"
 				>
-					<i class="fa-solid fa-pen-to-square"></i>
+					<i class="fa-solid fa-cogs" />
 				</b-button>
 				<b-button
-					variant="danger"
-					@click="carregarUsuario(data.item, 'remover')"
+					variant="warning"
+					@click="carregarUsuarios()"
+					v-if="modo === 'opcoes'"
+					class="mr-1"
 				>
-					<i class="fa-solid fa-trash-can"></i>
+					<i class="fa-solid fa-cancel" />
 				</b-button>
 			</template>
 		</b-table>
@@ -131,13 +131,14 @@
 
 <script>
 	import { mapState } from "vuex";
+	import BotaoCrud from "../templates/botoes/BotaoCrud.vue";
 	import TituloPagina from "../templates/TituloPagina.vue";
 	import g from "@/global";
 	import axios from "axios";
 	export default {
 		nome: "UsuariosAdmin",
 		computed: mapState(["usuario"]),
-		components: { TituloPagina },
+		components: { TituloPagina, BotaoCrud },
 		data: function () {
 			return {
 				modo: "incluir",
@@ -145,6 +146,12 @@
 				usuario: {},
 				usuarios: [],
 				campos: [
+					{
+						key: "id",
+						label: "#",
+						sortable: true,
+						class: "d-none d-sm-block",
+					},
 					{
 						key: "nome",
 						label: "Nome",
@@ -169,19 +176,35 @@
 			};
 		},
 		methods: {
+			clicou(evento) {
+				if (evento.which === 13) {
+					if (this.modo === "incluir") {
+						this.incluir();
+					} else {
+						this.atualizar();
+					}
+				}
+			},
+			opcoesUsuario(usuario, modo = "opcoes") {
+				this.modo = modo;
+				this.usuario = usuario;
+				this.usuarios = [{ ...this.usuario }];
+				// this.usuarios.caminho = [this.usuario.caminho];
+			},
 			carregarUsuario(usuario, modo = "incluir") {
 				this.modo = modo;
 				this.usuario = { ...usuario };
 			},
-			carregarUsuarios() {
-				axios.get(`${g.baseApi}usuarios`).then((res) => {
-					this.usuarios = res.data;
+			carregarUsuarios(modo = "incluir") {
+				this.modo = modo;
+				axios.get(`${g.baseApi}usuarios`).then((usuarios) => {
+					this.usuarios = usuarios.data;
 				});
 			},
 			limpar(modo = "incluir") {
 				this.modo = modo;
 				this.usuario = {};
-				this.carregarUsuarios(this.usuario);
+				this.carregarUsuarios();
 			},
 			incluir() {
 				axios

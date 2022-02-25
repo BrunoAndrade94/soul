@@ -1,7 +1,7 @@
 <template>
 	<div id="app" :class="{ 'esconder-menu': menuVisivel || !usuario }">
 		<Cabecalho
-			titulo="SOULuções MV"
+			titulo="SOULuções"
 			:esconderToggle="!usuario"
 			:esconderMenuUsuario="!usuario"
 		/>

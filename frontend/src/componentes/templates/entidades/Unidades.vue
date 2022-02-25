@@ -18,7 +18,7 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="2">
-					<b-form-group label="Código" label-for="unidade-id">
+					<b-form-group label="Código:" label-for="unidade-id">
 						<b-form-input
 							v-model="unidade.id"
 							:readonly="true"
@@ -28,8 +28,8 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="4" sm="10">
-					<b-form-group label="Unidade" label-for="unidade-nome">
+				<b-col md="10" sm="10">
+					<b-form-group label="* Unidade:" label-for="unidade-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							v-model="unidade.nome"
@@ -87,8 +87,12 @@
 					},
 					{
 						key: "nome",
-						label: "Unidade",
+						label: "Unidades",
 						sortable: true,
+					},
+					{
+						key: "fator",
+						label: "Fator",
 					},
 					{
 						key: "acoes",

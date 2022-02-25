@@ -17,7 +17,7 @@
 		<b-form>
 			<b-row>
 				<b-col md="2" sm="12">
-					<b-form-group label="Código" label-for="modulo-id">
+					<b-form-group label="Código:" label-for="modulo-id">
 						<b-form-input
 							id="modulo-id"
 							type="number"
@@ -27,8 +27,8 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="6" sm="12">
-					<b-form-group label="Módulo" label-for="modulo-nome">
+				<b-col md="8" sm="12">
+					<b-form-group label="* Módulo:" label-for="modulo-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
 							id="modulo-nome"
@@ -38,23 +38,11 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-			</b-row>
-			<b-row>
-				<b-col md="6" sm="12">
-					<b-form-group label="Caminho" label-for="modulo-nome">
-						<b-form-input
-							id="modulo-nome"
-							readonly="true"
-							type="text"
-							v-model="modulo.caminho"
-							placeholder="Caminho do módulo..."
-						></b-form-input>
-					</b-form-group>
-				</b-col>
+				<b-form-checkbox class="mt-3 ml-4 pl-3 pt-3"> Tela </b-form-checkbox>
 			</b-row>
 			<b-row>
 				<b-col class="d-none d-sm-block" md="2" sm="12">
-					<b-form-group label="Código" label-for="maeId">
+					<b-form-group label="Código:" label-for="maeId">
 						<b-form-input
 							required
 							:readonly="true"
@@ -67,10 +55,10 @@
 					</b-form-group>
 				</b-col>
 				<div></div>
-				<b-col md="6" sm="12">
-					<b-form-group label="Módulo Mãe" label-for="modulo-mae">
+				<b-col md="8" sm="12">
+					<b-form-group label="Módulo Mãe:" label-for="modulo-mae">
 						<b-form-select
-							required
+							v-show="modo === 'incluir'"
 							id="modulo-mae"
 							v-model="modulo"
 							:options="modulos"
@@ -78,6 +66,26 @@
 							text-field="nome"
 						>
 						</b-form-select>
+						<b-form-input
+							v-show="modo === 'opcoes'"
+							id="modulo-mae"
+							v-model="moduloAnterior"
+							readonly="true"
+						>
+						</b-form-input>
+					</b-form-group>
+				</b-col>
+			</b-row>
+			<b-row>
+				<b-col md="18" sm="12">
+					<b-form-group label="Caminho:" label-for="modulo-nome">
+						<b-form-input
+							id="modulo-nome"
+							readonly="true"
+							type="text"
+							v-model="modulo.caminho"
+							placeholder="Caminho do módulo..."
+						></b-form-input>
 					</b-form-group>
 				</b-col>
 			</b-row>
@@ -121,14 +129,21 @@
 				modo: "incluir",
 				modulo: {},
 				modulos: [],
+				moduloAnterior: {},
 				campos: [
 					{ key: "id", label: "#", class: "d-none d-sm-block" },
-					{ key: "nome", label: "Descrição", sortable: true },
+					{ key: "nome", label: "Módulos", sortable: true },
 					{
 						key: "maeId",
 						label: "#",
+						class: "d-none d-sm-block",
 					},
-					{ key: "caminho", label: "Caminho" },
+					{ key: "caminho", label: "Caminhos" },
+					{
+						key: "modoTela",
+						label: "Tela",
+						formatter: (valor) => (valor ? "Sim" : "Não"),
+					},
 					{ key: "acoes", label: "Opções" },
 				],
 			};
@@ -144,10 +159,11 @@
 				}
 			},
 			opcoesModulo(modulo, modo) {
-				this.modo = modo;
+				this.obterModuloAnterior();
+				console.log(this.moduloAnterior.nome);
 				this.modulo = modulo;
-				this.modulos = [this.modulo];
-				// this.modulos.caminho = [this.modulo.caminho];
+				this.modulos = [{ ...this.modulo }];
+				this.modo = modo;
 			},
 			carregarModulos() {
 				this.limpar();
@@ -160,10 +176,10 @@
 			incluir() {
 				// ESTÁ COMO INDEFINIDO, VER MODEL DO INPUT
 				// DEPOIS DE APRENDER SOBRE STORE, MUDAR AQUI
-				console.log(this.modulo.mae);
+				// console.log(this.modulo.mae);
 
-				this.modulo.maeId = this.modulo.id;
-				this.modulo.nome = this.modulo.nome;
+				// this.modulo.maeId = this.modulo.id;
+				// this.modulo.nome = this.modulo.nome;
 
 				axios
 					.post(`${g.baseApi}modulos`, this.modulo)
@@ -187,7 +203,6 @@
 					.catch(g.mostrarErro);
 			},
 			remover() {
-				console.log(this.modulo.id);
 				axios
 					.delete(`${g.baseApi}modulos/${this.modulo.id}`, this.modulo)
 					.then(() => {
@@ -201,10 +216,16 @@
 				this.modulo = {};
 				this.modulos = {};
 			},
+			obterModuloAnterior() {
+				axios
+					.get(`${g.baseApi}moduloAnterior/${this.modulo.id}`)
+					.then((modulo) => (this.moduloAnterior = modulo.data[0].nome));
+			},
 		},
-		mounted() {
+		created() {
 			this.carregarModulos();
 		},
+		mounted() {},
 	};
 </script>
 

@@ -25,5 +25,5 @@ consign()
 	.into(app);
 
 app.listen(porta, ip, () => {
-	console.log("--- BACK ESTÁ DE PÉ --- PORTA: " + porta);
+	console.log(`--PORTA: ${porta}\n--IP: ${ip}`);
 });

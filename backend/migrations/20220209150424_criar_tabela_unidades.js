@@ -2,6 +2,7 @@ exports.up = function (knex, Promise) {
 	return knex.schema.createTable("unidades", (tabela) => {
 		tabela.increments("id").primary();
 		tabela.string("nome").notNull();
+		tabela.integer("fator").notNull().defaultTo(1);
 		tabela.timestamp("removidoEm");
 		tabela.timestamp("alteradoEm");
 	});
