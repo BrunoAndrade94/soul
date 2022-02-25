@@ -1,12 +1,10 @@
 module.exports = (app) => {
-	const notificacao = app.api.config.notificacoes;
+	const n = app.api.config.notificacoes;
 
 	function existeOuErro(valor, erro) {
-		if (!valor) throw notificacao.atencao + erro;
-		if (Array.isArray(valor) && valor.length === 0)
-			throw notificacao.atencao + erro;
-		if (typeof valor === "string" && !valor.trim())
-			throw notificacao.atencao + erro;
+		if (!valor) throw erro;
+		if (Array.isArray(valor) && valor.length === 0) throw erro;
+		if (typeof valor === "string" && !valor.trim()) throw erro;
 	}
 
 	function naoExisteOuErro(valor, erro) {
@@ -15,15 +13,19 @@ module.exports = (app) => {
 		} catch (erro) {
 			return;
 		}
-		throw notificacao.atencao + erro;
+		throw erro;
 	}
 
 	function igualOuErro(valor1, valor2, erro) {
-		if (valor1 !== valor2) throw notificacao.atencao + erro;
+		if (valor1 !== valor2) throw erro;
 	}
 
 	function numeroOuErro(valor, erro) {
-		if (!Number(valor)) throw notificacao.atencao + erro;
+		if (!Number(valor) || Number(valor) < 0) throw erro;
+	}
+
+	function éNumero(valor) {
+		return Number(valor);
 	}
 
 	function objetoVazio(objeto) {
@@ -32,11 +34,17 @@ module.exports = (app) => {
 		);
 	}
 
+	function objetoNaoVazioOuErro(objeto, erro) {
+		if (objetoVazio(objeto)) throw erro;
+	}
+
 	return {
 		existeOuErro,
 		naoExisteOuErro,
 		igualOuErro,
 		numeroOuErro,
 		objetoVazio,
+		objetoNaoVazioOuErro,
+		éNumero,
 	};
 };

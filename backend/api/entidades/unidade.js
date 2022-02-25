@@ -44,6 +44,37 @@ module.exports = (app) => {
 		}
 	};
 
+	const obterPorParametro = async (req, res) => {
+		try {
+			const unidade = { nome: req.body.nome };
+
+			if (!!req.body.id) {
+				if (req.body.id !== undefined) {
+					v.numeroOuErro(req.body.id, n.idInvalido);
+					unidade.id = req.body.id;
+				}
+			} else if (!v.éNumero(req.body.id)) {
+				unidade.id = 0;
+			}
+
+			if (unidade.nome === undefined) unidade.nome = "";
+
+			const achados = await app
+				.db(tabela.unidades)
+				.select(coluna.id, coluna.nome)
+				.whereNull(coluna.removidoEm)
+				.where({ id: unidade.id })
+				.orWhere(coluna.nome, "like", unidade.nome)
+				.whereNull(coluna.removidoEm);
+
+			v.existeOuErro(achados, n.naoEncontreiNada);
+
+			res.json(achados);
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
+	};
+
 	const remover = async (req, res) => {
 		try {
 			const unidade = { ...req.body };
@@ -89,5 +120,12 @@ module.exports = (app) => {
 		}
 	};
 
-	return { incluir, atualizar, remover, obter, obterPorId };
+	return {
+		incluir,
+		atualizar,
+		remover,
+		obter,
+		obterPorId,
+		obterPorParametro,
+	};
 };

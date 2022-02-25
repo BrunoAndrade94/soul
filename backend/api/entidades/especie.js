@@ -8,8 +8,7 @@ module.exports = (app) => {
 		try {
 			const especie = { ...req.body };
 			v.existeOuErro(especie.nome, n.nomeNaoInformado);
-
-			if (especie.id === null) delete especie.id;
+			if (!especie.id) delete especie.id;
 
 			app.db(tabela.especies)
 				.insert(especie)
@@ -52,22 +51,54 @@ module.exports = (app) => {
 			.catch((erro) => res.status(500).send(erro));
 	};
 
-	const obterPorParametro = (req, res) => {
+	const obterPorParametro = async (req, res) => {
 		try {
-			const especie = { ...req.body };
-			if (req.params.id) {
-				v.numeroOuErro(req.params.id, n.idInvalido);
-				especie.id = req.params.id;
+			//const especie = { ...req.body };
+			const especie = { nome: req.body.nome };
+
+			if (!!req.body.id) {
+				if (req.body.id !== undefined) {
+					v.numeroOuErro(req.body.id, n.idInvalido);
+					especie.id = req.body.id;
+				}
+			} else if (!v.éNumero(req.body.id)) {
+				especie.id = 0;
 			}
 
-			v.existeOuErro(especie.nome, n.nomeNaoInformado);
+			if (especie.nome === undefined) especie.nome = "";
 
-			app.db(tabela.especies)
-				.select(coluna.id, coluna.nome)
-				.where(coluna.nome, "like", especie.nome ? especie.nome : null)
-				.orWhere({ id: especie.id })
-				.then((especies) => res.json(especies).send())
-				.catch((erro) => res.status(500).send(erro));
+			if (!especie.id && !especie.nome) throw n.digiteAlgo;
+
+			// CONSULTA SE INFORMAR ID E NOME
+			if (!!especie.id && !!especie.nome) {
+				await app
+					.db(tabela.especies)
+					.whereNull(coluna.removidoEm)
+					.where({ id: especie.id })
+					.where(coluna.nome, "like", especie.nome)
+					.then((especies) => res.json(especies))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// CONSULTA SE INFORMAR APENAS ID
+			else if (!!especie.id && !especie.nome) {
+				await app
+					.db(tabela.especies)
+					.whereNull(coluna.removidoEm)
+					.where({ id: especie.id })
+					.then((especies) => res.json(especies))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// CONSULTA SE INFORMAR APENAS NOME
+			else if (!especie.id && !!especie.nome) {
+				await app
+					.db(tabela.especies)
+					.whereNull(coluna.removidoEm)
+					.where(coluna.nome, "like", especie.nome)
+					.then((especies) => res.json(especies))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// da erro e nao acha os itens
+			// res.status(400).send(n.naoEncontreiNada);
 		} catch (erro) {
 			res.status(400).send(erro);
 		}

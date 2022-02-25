@@ -37,6 +37,13 @@ module.exports = (app) => {
 	const senhaNaoInformada = "Senha não informada!";
 	const senhasNaoConferem = "Senhas não conferem!";
 	const confirmacaoInvalida = "Confirmação de senha inválida!";
+
+	const informeAlgoParaConsulta = "Informe algo para consulta!";
+	const digiteAlgo = "Digite algo né!";
+
+	const naoEncontreiNada = "Não encontrei nada!";
+	const encontreiEssas = "Encontrei essa(s)!";
+
 	// -----
 
 	return {
@@ -68,5 +75,9 @@ module.exports = (app) => {
 		especieNaoInformada,
 		especiePossuiProduto,
 		moduloNaoPossuiCaminho,
+		informeAlgoParaConsulta,
+		naoEncontreiNada,
+		encontreiEssas,
+		digiteAlgo,
 	};
 };

@@ -107,7 +107,7 @@ module.exports = (app) => {
 			console.log(idMae);
 
 			app.db(tabela.modulos)
-				// .select(coluna.nome)
+				.select("nome as anterior")
 				.where({ id: idMae })
 				.first()
 				.then((moduloAnterior) => res.json(moduloAnterior))

@@ -10,6 +10,7 @@
 			:desativarModoIncluir="modo === 'opcoes'"
 			:desativarModoOpcoes="modo === 'incluir'"
 			:clicarObter="obter"
+			:clicarLimpar="carregarUnidades"
 			:clicarIncluir="incluir"
 			:clicarAtualizar="atualizar"
 			:clicarRemover="remover"
@@ -21,7 +22,6 @@
 					<b-form-group label="Código:" label-for="unidade-id">
 						<b-form-input
 							v-model="unidade.id"
-							:readonly="true"
 							id="unidade-id"
 							type="number"
 							placeholder="#"
@@ -132,7 +132,15 @@
 				this.modo = modo;
 				this.unidade = {};
 			},
-			obter() {},
+			obter() {
+				axios
+					.post(`${g.baseApi}unidade`, this.unidade)
+					.then((unidades) => {
+						this.unidades = unidades.data;
+						g.mostrarSucesso("Encontrei essa (s)!");
+					})
+					.catch(g.mostrarErro);
+			},
 			incluir() {
 				axios
 					.post(`${g.baseApi}unidades`, this.unidade)

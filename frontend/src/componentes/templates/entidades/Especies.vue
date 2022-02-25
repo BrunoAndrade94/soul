@@ -9,6 +9,7 @@
 			:desativarModoIncluir="modo === 'opcoes'"
 			:desativarModoOpcoes="modo === 'incluir'"
 			:clicarObter="obter"
+			:clicarLimpar="carregarEspecies"
 			:clicarIncluir="incluir"
 			:clicarAtualizar="atualizar"
 			:clicarRemover="remover"
@@ -21,8 +22,8 @@
 							id="especie-id"
 							type="number"
 							v-model="especie.id"
-							:readonly="true"
 							placeholder="#"
+							min="0"
 						></b-form-input>
 					</b-form-group>
 				</b-col>
@@ -82,6 +83,7 @@
 					{
 						key: "id",
 						label: "#",
+						sortable: true,
 					},
 					{
 						key: "nome",
@@ -144,10 +146,18 @@
 					})
 					.catch(g.mostrarErro);
 			},
-			obter(especie) {
-				axios.get(`${g.baseApi}especie`, especie).then((especies) => {
-					this.especies = especies.data;
-				});
+			obter() {
+				axios
+					.post(`${g.baseApi}especie`, this.especie)
+					.then((especies) => {
+						this.especies = especies.data;
+						if (this.especies.length > 0) {
+							g.mostrarSucesso("Encontrei essa (s)!");
+						} else {
+							g.mostrarErro("Não encontrei nada!");
+						}
+					})
+					.catch(g.mostrarErro);
 			},
 			remover() {
 				axios

@@ -31,6 +31,8 @@ module.exports = (app) => {
 	//========================
 	// ROTAS PRODUTOS ========
 	//========================
+	app.route("/produto").post(app.api.entidades.produto.obterPorParametro);
+
 	app.route("/produtos")
 		.post(app.api.entidades.produto.incluir)
 		.get(app.api.entidades.produto.obterJoin);
@@ -42,7 +44,7 @@ module.exports = (app) => {
 	//========================
 	// ROTAS ESPECIES ========
 	//========================
-	app.route("/especie").get(app.api.entidades.especie.obterPorParametro);
+	app.route("/especie").post(app.api.entidades.especie.obterPorParametro);
 
 	app.route("/especies")
 		.post(app.api.entidades.especie.incluir)
@@ -70,6 +72,8 @@ module.exports = (app) => {
 	//========================
 	// ROTAS UNIDADES ========
 	//========================
+	app.route("/unidade").post(app.api.entidades.unidade.obterPorParametro);
+
 	app.route("/unidades")
 		.post(app.api.entidades.unidade.incluir)
 		.get(app.api.entidades.unidade.obter);

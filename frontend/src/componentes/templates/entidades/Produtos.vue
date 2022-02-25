@@ -10,6 +10,7 @@
 			:desativarModoIncluir="modo === 'opcoes'"
 			:desativarModoOpcoes="modo === 'incluir'"
 			:clicarObter="obter"
+			:clicarLimpar="carregarProdutos"
 			:clicarIncluir="incluir"
 			:clicarAtualizar="atualizar"
 			:clicarRemover="remover"
@@ -19,7 +20,6 @@
 				<b-col md="2" sm="2">
 					<b-form-group label="Código:" label-for="produto">
 						<b-form-input
-							:readonly="true"
 							v-model="produto.id"
 							id="produto-id"
 							type="number"
@@ -46,7 +46,6 @@
 					<b-form-group label="Código:" label-for="especie">
 						<b-form-input
 							required
-							:readonly="true"
 							v-model="especie"
 							id="especie-id"
 							type="number"
@@ -73,7 +72,6 @@
 					<b-form-group label="Código:" label-for="unidade">
 						<b-form-input
 							required
-							:readonly="true"
 							v-model="unidade"
 							id="unidade-id"
 							type="number"
@@ -152,6 +150,7 @@
 						key: "id",
 						label: "#",
 						class: "d-none d-sm-block",
+						sortable: true,
 					},
 					{
 						key: "nome",
@@ -261,7 +260,24 @@
 					})
 					.catch(g.mostrarErro);
 			},
-			obter() {},
+			obter() {
+				if (!v.objetoVazio(this.especie)) {
+					this.produto.idEspecie = this.especie;
+				}
+				if (!v.objetoVazio(this.unidade)) {
+					this.produto.idUnidade = this.unidade;
+				}
+
+				axios
+					.post(`${g.baseApi}produto`, this.produto)
+					.then((produtos) => {
+						this.produtos = produtos.data;
+						this.carregarEspecies();
+						this.carregarUnidades();
+						g.mostrarSucesso("Encontrei essa (s)!");
+					})
+					.catch(g.mostrarErro);
+			},
 			remover() {
 				axios
 					.delete(`${g.baseApi}produtos/${this.produto.id}`, this.produto)

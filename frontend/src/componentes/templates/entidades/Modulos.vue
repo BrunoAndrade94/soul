@@ -22,8 +22,9 @@
 							id="modulo-id"
 							type="number"
 							v-model="modulo.id"
-							:readonly="true"
+							readonly="true"
 							placeholder="#"
+							min="0"
 						></b-form-input>
 					</b-form-group>
 				</b-col>
@@ -45,7 +46,7 @@
 					<b-form-group label="Código:" label-for="maeId">
 						<b-form-input
 							required
-							:readonly="true"
+							readonly="true"
 							v-model="modulo"
 							id="maeId"
 							type="number"
@@ -58,7 +59,6 @@
 				<b-col md="8" sm="12">
 					<b-form-group label="Módulo Mãe:" label-for="modulo-mae">
 						<b-form-select
-							v-show="modo === 'incluir'"
 							id="modulo-mae"
 							v-model="modulo"
 							:options="modulos"
@@ -67,9 +67,8 @@
 						>
 						</b-form-select>
 						<b-form-input
-							v-show="modo === 'opcoes'"
 							id="modulo-mae"
-							v-model="moduloAnterior"
+							v-model="modulo.anterior"
 							readonly="true"
 						>
 						</b-form-input>
@@ -160,7 +159,7 @@
 			},
 			opcoesModulo(modulo, modo) {
 				this.obterModuloAnterior();
-				console.log(this.moduloAnterior.nome);
+				console.log(this.moduloAnterior);
 				this.modulo = modulo;
 				this.modulos = [{ ...this.modulo }];
 				this.modo = modo;
@@ -219,7 +218,7 @@
 			obterModuloAnterior() {
 				axios
 					.get(`${g.baseApi}moduloAnterior/${this.modulo.id}`)
-					.then((modulo) => (this.moduloAnterior = modulo.data[0].nome));
+					.then((modulo) => (this.modulo = modulo.data));
 			},
 		},
 		created() {

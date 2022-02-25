@@ -111,6 +111,7 @@
 		justify-content: center;
 		align-items: center;
 		background-color: #708eb6;
+		white-space: none;
 	}
 	.autenticar-modal {
 		background-color: #fff;

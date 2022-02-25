@@ -5,15 +5,23 @@
 				class="obter"
 				:disabled="desativarModoIncluir"
 				@click="clicarObter"
-				variant="success"
+				variant="primary"
 			>
 				<i class="fa-solid fa-magnifying-glass" />
+			</b-button>
+			<b-button
+				class="limpar"
+				:disabled="desativarModoIncluir"
+				@click="clicarLimpar"
+				variant="info"
+			>
+				<i class="fa-solid fa-broom" />
 			</b-button>
 			<b-button
 				class="incluir"
 				:disabled="desativarModoIncluir"
 				@click="clicarIncluir"
-				variant="primary"
+				variant="success"
 			>
 				<i class="fa-solid fa-download" />
 			</b-button>
@@ -45,6 +53,7 @@
 			desativarModoIncluir: String,
 			desativarModoOpcoes: String,
 			clicarObter: String,
+			clicarLimpar: String,
 			clicarIncluir: String,
 			clicarAtualizar: String,
 			clicarRemover: String,
