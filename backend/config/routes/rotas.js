@@ -8,9 +8,12 @@ module.exports = (app) => {
 	app.post("/cadastro", app.api.entidades.usuario.incluir);
 	app.post("/validarToken", app.config.admin.autenticar.validarToken);
 
-	// app.route("/estatisticas")
-	// 	.all(app.config.admin.passaporte.autenticar())
-	// 	.get(app.api.relatorios.proprios.estatisticas.obter);
+	//========================
+	// ROTAS RELATÓRIOS ======
+	//========================
+	app.route("/rlt")
+		// 	.all(app.config.admin.passaporte.autenticar())
+		.get(app.api.relatorios.proprios.home.obter);
 
 	//========================
 	// ROTAS USUARIOS ========

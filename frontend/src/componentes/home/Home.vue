@@ -7,22 +7,34 @@
 		/>
 		<div class="estatisticas">
 			<Estatistica
-				titulo="Produtos"
-				:valor="estatistica.produtos"
-				icone="fa fa-folder"
-				cor="#d54d50"
-			/>
-			<Estatistica
-				titulo="Usuários"
+				titulo="Usuários:"
 				:valor="estatistica.usuarios"
-				icone="fa fa-user"
-				cor="#008000"
+				icone="fa-solid fa-users"
+				cor="green"
 			/>
 			<Estatistica
-				titulo="Módulos"
+				titulo="Módulos:"
 				:valor="estatistica.modulos"
-				icone="fa fa-file"
-				cor="#ff007e"
+				icone="fa-solid fa-boxes-stacked"
+				cor="purple"
+			/>
+			<Estatistica
+				titulo="Produtos:"
+				:valor="estatistica.produtos"
+				icone="fa-solid fa-box"
+				cor="red"
+			/>
+			<Estatistica
+				titulo="Espécies:"
+				:valor="estatistica.especies"
+				icone="fa-solid fa-frog"
+				cor="black"
+			/>
+			<Estatistica
+				titulo="Unidades:"
+				:valor="estatistica.unidades"
+				icone="fa-solid fa-umbrella"
+				cor="blue"
 			/>
 		</div>
 	</div>
@@ -43,9 +55,7 @@
 		},
 		methods: {
 			obterEstatistica() {
-				axios
-					.get(`${baseApi}/estatistica`)
-					.then((res) => (this.estatistica = res.data));
+				axios.get(`${baseApi}rlt`).then((res) => (this.estatistica = res.data));
 			},
 		},
 		mounted() {

@@ -4,6 +4,30 @@ module.exports = (app) => {
 	const tabela = app.api.entidades.db.tabelas;
 	const coluna = app.api.entidades.db.colunas;
 
+	//============================================
+	// PARA CONSULTAS NO BANCO USANDO JOIN =======
+	//============================================
+	// QUERY
+	const igual = "=";
+	const like = "like";
+
+	// LINHAS DO SELECT
+	const produtosId = "produtos.id";
+	const produtosNome = "produtos.nome";
+	const especiesIdAs = "especies.id as idEspecie";
+	const especiesNomeAs = "especies.nome as nomeEspecie";
+	const unidadesIdAs = "unidades.id as idUnidade";
+	const unidadesNomeAs = "unidades.nome as nomeUnidade";
+
+	// COLUNA NULO
+	const produtosNull = "produtos.removidoEm";
+
+	// PARA FAZER JOIN
+	const produtosIdEspecie = "produtos.idEspecie";
+	const produtosIdUnidade = "produtos.idUnidade";
+	const especiesId = "especies.id";
+	const unidadesId = "unidades.id";
+
 	const incluir = async (req, res) => {
 		try {
 			const produto = {
@@ -78,17 +102,17 @@ module.exports = (app) => {
 	const obterJoin = (req, res) => {
 		app.db(tabela.produtos)
 			.select(
-				"produtos.id",
-				"produtos.nome",
-				"especies.id as idEspecie",
-				"especies.nome as nomeEspecie",
-				"unidades.id as idUnidade",
-				"unidades.nome as nomeUnidade"
+				produtosId,
+				produtosNome,
+				especiesIdAs,
+				especiesNomeAs,
+				unidadesIdAs,
+				unidadesNomeAs
 			)
-			.whereNull("produtos.removidoEm")
+			.whereNull(produtosNull)
 			.orderBy(coluna.nome)
-			.join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
-			.join(tabela.unidades, "produtos.idUnidade", "=", "unidades.id")
+			.join(tabela.especies, produtosIdEspecie, igual, especiesId)
+			.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
 			.then((produtos) => res.json(produtos))
 			.catch((erro) => res.status(500).send(erro));
 	};
@@ -102,31 +126,31 @@ module.exports = (app) => {
 				idUnidade: req.body.idUnidade,
 			};
 
-			console.log(produto);
-			if (!produto.id) throw n.digiteAlgo;
-			if (!produto.nome) throw n.digiteAlgo;
-			if (!produto.idEspecie) throw n.digiteAlgo;
-			if (!produto.idUnidade) throw n.digiteAlgo;
+			if (
+				!produto.id &&
+				!produto.nome &&
+				!produto.idEspecie &&
+				!produto.idUnidade
+			)
+				throw n.digiteAlgo;
 
-			if (produto.id !== undefined) {
-			} else if (!v.éNumero(produto.id)) {
+			// VERIFICA SE NÃO TEM CONTEÚDO E SE NÃO É UM NÚMERO
+			if (!!produto.id && !v.éNumero(produto.id)) {
 				v.numeroOuErro(produto.id, n.idInvalido);
 				produto.id = 0;
+			}
+			if (!!produto.idEspecie && !v.éNumero(produto.idEspecie)) {
+				v.numeroOuErro(produto.idEspecie, n.idInvalido);
 				produto.idEspecie = 0;
 			}
-			if (produto.idEspecie !== undefined) {
-			} else if (!v.éNumero(produto.idEspecie)) {
-				v.numeroOuErro(produto.idEspecie, n.idInvalido);
-			}
-			if (produto.idUnidade !== undefined) {
-			} else if (!v.éNumero(produto.idUnidade)) {
+			if (!!produto.idUnidade && !v.éNumero(produto.idUnidade)) {
 				v.numeroOuErro(produto.idUnidade, n.idInvalido);
 				produto.idUnidade = 0;
 			}
 
 			if (v.stringVazia(produto.nome)) produto.nome = "";
-			console.log(produto);
-			// CONSULTA SE INFORMAR ID, NOME, IDESPECIE, IDUNIDADE
+
+			// CONSULTA SE TIVER ID, NOME, IDESPECIE, IDUNIDADE
 			if (
 				!!produto.id &&
 				!!produto.nome &&
@@ -136,91 +160,71 @@ module.exports = (app) => {
 				await app
 					.db(tabela.produtos)
 					.select(
-						"produtos.id",
-						"produtos.nome",
-						"especies.id as idEspecie",
-						"especies.nome as nomeEspecie",
-						"unidades.id as idUnidade",
-						"unidades.nome as nomeUnidade"
+						produtosId,
+						produtosNome,
+						especiesIdAs,
+						especiesNomeAs,
+						unidadesIdAs,
+						unidadesNomeAs
 					)
-					.whereNull("produtos.removidoEm")
+					.whereNull(produtosNull)
 					.orderBy(coluna.nome)
-					.join(
-						tabela.especies,
-						"produtos.idEspecie",
-						"=",
-						"especies.id"
-					)
-					.join(
-						tabela.unidades,
-						"produtos.idUnidade",
-						"=",
-						"unidades.id"
-					)
-					.where("produtos.id", "=", "produto.id")
-					.where("especies.id", "=", "produto.idEspecie")
-					.where("unidades.id", "=", "produto.idUnidade")
+					.join(tabela.especies, produtosIdEspecie, igual, especiesId)
+					.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
+					.where(produtosId, igual, produto.id)
+					.where(produtosNome, igual, produto.nome)
+					.where(especiesId, igual, produto.idEspecie)
+					.where(unidadesId, igual, produto.idUnidade)
 					.then((produtos) => res.json(produtos))
 					.catch((erro) => res.status(500).send(erro));
 			}
-
-			// if (produto.idEspecie !== undefined) {
-			// } else if (!v.éNumero(produto.idEspecie)) {
-			// 	v.numeroOuErro(produto.idEspecie, n.idInvalido);
-			// 	produto.idEspecie = 0;
-			// }
-
-			// if (!!req.body.idUnidade) {
-			// 	if (req.body.idUnidade !== undefined) {
-			// 		v.numeroOuErro(req.body.idUnidade, n.idInvalido);
-			// 	}
-			// } else if (!v.éNumero(req.body.idUnidade)) {
-			// 	produto.idUnidade = 0;
-			// }
-
-			// if (produto.nome === undefined) produto.nome = "";
-
-			// const achados = await app
-			// 	.db(tabela.produtos)
-			// 	// .select(
-			// 	// 	"produtos.id",
-			// 	// 	"produtos.nome",
-			// 	// 	"especies.id as idEspecie",
-			// 	// 	"especies.nome as nomeEspecie"
-			// 	// 	// "unidades.id as idUnidade",
-			// 	// 	// "unidades.nome as nomeUnidade"
-			// 	// )
-			// 	// .join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
-			// 	// .join(tabela.unidades, "produto.idUnidade", "=", "unidades.id")
-			// 	// .whereNull("produtos.removidoEm")
-			// 	.where({ id: produto.id })
-			// 	.whereNull(coluna.removidoEm)
-			// 	// .whereNull("especies.removidoEm")
-			// 	// .whereNull(coluna.removidoEm)
-			// 	.whereNull(coluna.removidoEm)
-			// 	.orWhere({ idEspecie: produto.idEspecie })
-			// 	// .whereNull("unidades.removidoEm")
-			// 	.whereNull(coluna.removidoEm)
-			// 	.orWhere({ idUnidade: produto.idUnidade })
-			// 	//
-			// 	.whereNull(coluna.removidoEm)
-			// 	.orWhere(coluna.nome, "like", produto.nome);
-
-			// // const achados = await app
-			// // 	.db(tabela.produtos)
-			// // 	.select(coluna.id, coluna.nome)
-			// // 	.whereNull(coluna.removidoEm)
-			// // 	.where({ id: produto.id })
-			// // 	.whereNull(coluna.removidoEm)
-			// // 	.orWhere({ idEspecie: produto.idEspecie })
-			// // 	.whereNull(coluna.removidoEm)
-			// // 	.orWhere({ idUnidade: produto.idUnidade })
-			// // 	.whereNull(coluna.removidoEm)
-			// // 	.orWhere(coluna.nome, "like", produto.nome);
-
-			// v.existeOuErro(achados, n.naoEncontreiNada);
-
-			// res.json(achados);
+			// CONSULTA SE TIVER ID, IDESPECIE, IDUNIDADE
+			else if (
+				!!produto.id &&
+				!!produto.idEspecie &&
+				!!produto.idUnidade
+			) {
+				await app
+					.db(tabela.produtos)
+					.select(
+						produtosId,
+						produtosNome,
+						especiesIdAs,
+						especiesNomeAs,
+						unidadesIdAs,
+						unidadesNomeAs
+					)
+					.whereNull(produtosNull)
+					.orderBy(coluna.nome)
+					.join(tabela.especies, produtosIdEspecie, igual, especiesId)
+					.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
+					.where(produtosId, igual, produto.id)
+					.where(especiesId, igual, produto.idEspecie)
+					.where(unidadesId, igual, produto.idUnidade)
+					.then((produtos) => res.json(produtos))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// CONSULTA SE TIVER IDESPECIE E IDUNIDADE
+			else if (!!produto.idEspecie && !!produto.idUnidade) {
+				await app
+					.db(tabela.produtos)
+					.select(
+						produtosId,
+						produtosNome,
+						especiesIdAs,
+						especiesNomeAs,
+						unidadesIdAs,
+						unidadesNomeAs
+					)
+					.whereNull(produtosNull)
+					.orderBy(coluna.nome)
+					.join(tabela.especies, produtosIdEspecie, igual, especiesId)
+					.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
+					.where(especiesId, igual, produto.idEspecie)
+					.where(unidadesId, igual, produto.idUnidade)
+					.then((produtos) => res.json(produtos))
+					.catch((erro) => res.status(500).send(erro));
+			}
 		} catch (erro) {
 			res.status(400).send(erro);
 		}

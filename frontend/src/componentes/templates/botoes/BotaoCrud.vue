@@ -2,6 +2,8 @@
 	<div class="BotaoCrud">
 		<b-button-group class="botao-crud">
 			<b-button
+				v-b-tooltip.hover
+				title="Consultar"
 				class="obter"
 				:disabled="desativarModoIncluir"
 				@click="clicarObter"
@@ -10,6 +12,8 @@
 				<i class="fa-solid fa-magnifying-glass" />
 			</b-button>
 			<b-button
+				v-b-tooltip.hover
+				title="Limpar"
 				class="limpar"
 				:disabled="desativarModoIncluir"
 				@click="clicarLimpar"
@@ -18,6 +22,8 @@
 				<i class="fa-solid fa-broom" />
 			</b-button>
 			<b-button
+				v-b-tooltip.hover
+				title="Incluir"
 				class="incluir"
 				:disabled="desativarModoIncluir"
 				@click="clicarIncluir"
@@ -26,6 +32,8 @@
 				<i class="fa-solid fa-download" />
 			</b-button>
 			<b-button
+				v-b-tooltip.hover
+				title="Atualizar"
 				class="atualizar"
 				:disabled="desativarModoOpcoes"
 				@click="clicarAtualizar"
@@ -34,6 +42,8 @@
 				<i class="fa-solid fa-highlighter" />
 			</b-button>
 			<b-button
+				v-b-tooltip.hover
+				title="Remover"
 				class="remover"
 				:disabled="desativarModoOpcoes || apenasAtualizar"
 				@click="clicarRemover"

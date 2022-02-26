@@ -52,5 +52,7 @@
 	}
 	.estatistica-valor {
 		font-size: 3rem;
+		color: rgb(29, 29, 29);
+		padding-right: 2px;
 	}
 </style>

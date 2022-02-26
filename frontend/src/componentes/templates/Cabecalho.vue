@@ -4,7 +4,7 @@
 			<i class="fa-solid fa-bars"></i>
 		</a>
 		<h1 class="titulo">
-			<i class="fa-solid fa-solar-panel" />
+			<i class="fa-solid fa-cannabis" />
 			<router-link to="/">
 				<span v-if="usuario">
 					{{ titulo }}
