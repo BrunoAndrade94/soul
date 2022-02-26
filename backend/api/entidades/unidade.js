@@ -46,30 +46,52 @@ module.exports = (app) => {
 
 	const obterPorParametro = async (req, res) => {
 		try {
-			const unidade = { nome: req.body.nome };
+			const unidade = { id: req.body.id, nome: req.body.nome };
 
-			if (!!req.body.id) {
-				if (req.body.id !== undefined) {
-					v.numeroOuErro(req.body.id, n.idInvalido);
-					unidade.id = req.body.id;
-				}
-			} else if (!v.éNumero(req.body.id)) {
+			// VERIFICA SE INFORMOU ALGO
+			if (!unidade.id && !unidade.nome) throw n.digiteAlgo;
+
+			// VERIFICA SE STRING ESTÁ VÁZIA
+			if (v.stringVazia(unidade.id)) {
+			} else if (!v.éNumero(unidade.id)) {
+				// if (!v.éNumero(unidade.id)) {
+				v.numeroOuErro(unidade.id, n.idInvalido);
 				unidade.id = 0;
 			}
 
-			if (unidade.nome === undefined) unidade.nome = "";
+			if (v.stringVazia(unidade.nome)) unidade.nome = "";
 
-			const achados = await app
-				.db(tabela.unidades)
-				.select(coluna.id, coluna.nome)
-				.whereNull(coluna.removidoEm)
-				.where({ id: unidade.id })
-				.orWhere(coluna.nome, "like", unidade.nome)
-				.whereNull(coluna.removidoEm);
-
-			v.existeOuErro(achados, n.naoEncontreiNada);
-
-			res.json(achados);
+			// CONSULTA SE INFORMAR ID E NOME
+			if (!!unidade.id && !!unidade.nome) {
+				await app
+					.db(tabela.unidades)
+					.select(coluna.id, coluna.nome)
+					.whereNull(coluna.removidoEm)
+					.where({ id: unidade.id })
+					.where(coluna.nome, "like", unidade.nome)
+					.then((unidades) => res.json(unidades))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// CONSULTA SE INFORMAR APENAS ID
+			else if (!!unidade.id && !unidade.nome) {
+				await app
+					.db(tabela.unidades)
+					.select(coluna.id, coluna.nome)
+					.whereNull(coluna.removidoEm)
+					.where({ id: unidade.id })
+					.then((unidades) => res.json(unidades))
+					.catch((erro) => res.status(500).send(erro));
+			}
+			// CONSULTA SE INFORMAR APENAS NOME
+			else if (!unidade.id && !!unidade.nome) {
+				await app
+					.db(tabela.unidades)
+					.select(coluna.id, coluna.nome)
+					.whereNull(coluna.removidoEm)
+					.where(coluna.nome, "like", unidade.nome)
+					.then((unidades) => res.json(unidades))
+					.catch((erro) => res.status(500).send(erro));
+			}
 		} catch (erro) {
 			res.status(400).send(erro);
 		}

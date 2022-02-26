@@ -53,26 +53,25 @@ module.exports = (app) => {
 
 	const obterPorParametro = async (req, res) => {
 		try {
-			//const especie = { ...req.body };
-			const especie = { nome: req.body.nome };
+			const especie = { id: req.body.id, nome: req.body.nome };
 
-			if (!!req.body.id) {
-				if (req.body.id !== undefined) {
-					v.numeroOuErro(req.body.id, n.idInvalido);
-					especie.id = req.body.id;
-				}
-			} else if (!v.éNumero(req.body.id)) {
+			// VERIFICA SE INFORMOU ALGO
+			if (!especie.id && !especie.nome) throw n.digiteAlgo;
+
+			// VERIFICA SE STRING ESTÁ VÁZIA
+			if (v.stringVazia(especie.id)) {
+			} else if (!v.éNumero(especie.id)) {
+				v.numeroOuErro(especie.id, n.idInvalido);
 				especie.id = 0;
 			}
 
-			if (especie.nome === undefined) especie.nome = "";
-
-			if (!especie.id && !especie.nome) throw n.digiteAlgo;
+			if (v.stringVazia(especie.nome)) especie.nome = "";
 
 			// CONSULTA SE INFORMAR ID E NOME
 			if (!!especie.id && !!especie.nome) {
 				await app
 					.db(tabela.especies)
+					.select(coluna.id, coluna.nome)
 					.whereNull(coluna.removidoEm)
 					.where({ id: especie.id })
 					.where(coluna.nome, "like", especie.nome)
@@ -83,6 +82,7 @@ module.exports = (app) => {
 			else if (!!especie.id && !especie.nome) {
 				await app
 					.db(tabela.especies)
+					.select(coluna.id, coluna.nome)
 					.whereNull(coluna.removidoEm)
 					.where({ id: especie.id })
 					.then((especies) => res.json(especies))
@@ -92,13 +92,12 @@ module.exports = (app) => {
 			else if (!especie.id && !!especie.nome) {
 				await app
 					.db(tabela.especies)
+					.select(coluna.id, coluna.nome)
 					.whereNull(coluna.removidoEm)
 					.where(coluna.nome, "like", especie.nome)
 					.then((especies) => res.json(especies))
 					.catch((erro) => res.status(500).send(erro));
 			}
-			// da erro e nao acha os itens
-			// res.status(400).send(n.naoEncontreiNada);
 		} catch (erro) {
 			res.status(400).send(erro);
 		}

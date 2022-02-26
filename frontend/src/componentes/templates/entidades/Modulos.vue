@@ -141,6 +141,7 @@
 					{
 						key: "modoTela",
 						label: "Tela",
+						class: "d-none d-sm-block",
 						formatter: (valor) => (valor ? "Sim" : "Não"),
 					},
 					{ key: "acoes", label: "Opções" },

@@ -39,7 +39,7 @@ module.exports = (app) => {
 	const confirmacaoInvalida = "Confirmação de senha inválida!";
 
 	const informeAlgoParaConsulta = "Informe algo para consulta!";
-	const digiteAlgo = "Digite algo né!";
+	const digiteAlgo = "Para consultar precisa digitar algo né!";
 
 	const naoEncontreiNada = "Não encontrei nada!";
 	const encontreiEssas = "Encontrei essa(s)!";

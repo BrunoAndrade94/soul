@@ -95,83 +95,132 @@ module.exports = (app) => {
 
 	const obterPorParametro = async (req, res) => {
 		try {
-			// const produto = { nome: req.body.nome };
 			const produto = {
 				id: req.body.id,
 				nome: req.body.nome,
 				idEspecie: req.body.idEspecie,
 				idUnidade: req.body.idUnidade,
 			};
-			console.log(produto);
-			if (!!req.body.id) {
-				if (req.body.id !== undefined) {
-					v.numeroOuErro(req.body.id, n.idInvalido);
-				}
-			} else if (!v.éNumero(req.body.id)) {
-				produto.id = 0;
-			}
 
-			if (!!req.body.idEspecie) {
-				if (req.body.idEspecie !== undefined) {
-					v.numeroOuErro(req.body.idEspecie, n.idInvalido);
-				}
-			} else if (!v.éNumero(req.body.idEspecie)) {
+			console.log(produto);
+			if (!produto.id) throw n.digiteAlgo;
+			if (!produto.nome) throw n.digiteAlgo;
+			if (!produto.idEspecie) throw n.digiteAlgo;
+			if (!produto.idUnidade) throw n.digiteAlgo;
+
+			if (produto.id !== undefined) {
+			} else if (!v.éNumero(produto.id)) {
+				v.numeroOuErro(produto.id, n.idInvalido);
+				produto.id = 0;
 				produto.idEspecie = 0;
 			}
-
-			if (!!req.body.idUnidade) {
-				if (req.body.idUnidade !== undefined) {
-					v.numeroOuErro(req.body.idUnidade, n.idInvalido);
-				}
-			} else if (!v.éNumero(req.body.idUnidade)) {
+			if (produto.idEspecie !== undefined) {
+			} else if (!v.éNumero(produto.idEspecie)) {
+				v.numeroOuErro(produto.idEspecie, n.idInvalido);
+			}
+			if (produto.idUnidade !== undefined) {
+			} else if (!v.éNumero(produto.idUnidade)) {
+				v.numeroOuErro(produto.idUnidade, n.idInvalido);
 				produto.idUnidade = 0;
 			}
 
-			if (produto.nome === undefined) produto.nome = "";
-
+			if (v.stringVazia(produto.nome)) produto.nome = "";
 			console.log(produto);
+			// CONSULTA SE INFORMAR ID, NOME, IDESPECIE, IDUNIDADE
+			if (
+				!!produto.id &&
+				!!produto.nome &&
+				!!produto.idEspecie &&
+				!!produto.idUnidade
+			) {
+				await app
+					.db(tabela.produtos)
+					.select(
+						"produtos.id",
+						"produtos.nome",
+						"especies.id as idEspecie",
+						"especies.nome as nomeEspecie",
+						"unidades.id as idUnidade",
+						"unidades.nome as nomeUnidade"
+					)
+					.whereNull("produtos.removidoEm")
+					.orderBy(coluna.nome)
+					.join(
+						tabela.especies,
+						"produtos.idEspecie",
+						"=",
+						"especies.id"
+					)
+					.join(
+						tabela.unidades,
+						"produtos.idUnidade",
+						"=",
+						"unidades.id"
+					)
+					.where("produtos.id", "=", "produto.id")
+					.where("especies.id", "=", "produto.idEspecie")
+					.where("unidades.id", "=", "produto.idUnidade")
+					.then((produtos) => res.json(produtos))
+					.catch((erro) => res.status(500).send(erro));
+			}
 
-			const achados = await app
-				.db(tabela.produtos)
-				// .select(
-				// 	"produtos.id",
-				// 	"produtos.nome",
-				// 	"especies.id as idEspecie",
-				// 	"especies.nome as nomeEspecie"
-				// 	// "unidades.id as idUnidade",
-				// 	// "unidades.nome as nomeUnidade"
-				// )
-				// .join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
-				// .join(tabela.unidades, "produto.idUnidade", "=", "unidades.id")
-				// .whereNull("produtos.removidoEm")
-				.where({ id: produto.id })
-				.whereNull(coluna.removidoEm)
-				// .whereNull("especies.removidoEm")
-				// .whereNull(coluna.removidoEm)
-				.whereNull(coluna.removidoEm)
-				.orWhere({ idEspecie: produto.idEspecie })
-				// .whereNull("unidades.removidoEm")
-				.whereNull(coluna.removidoEm)
-				.orWhere({ idUnidade: produto.idUnidade })
-				//
-				.whereNull(coluna.removidoEm)
-				.orWhere(coluna.nome, "like", produto.nome);
+			// if (produto.idEspecie !== undefined) {
+			// } else if (!v.éNumero(produto.idEspecie)) {
+			// 	v.numeroOuErro(produto.idEspecie, n.idInvalido);
+			// 	produto.idEspecie = 0;
+			// }
+
+			// if (!!req.body.idUnidade) {
+			// 	if (req.body.idUnidade !== undefined) {
+			// 		v.numeroOuErro(req.body.idUnidade, n.idInvalido);
+			// 	}
+			// } else if (!v.éNumero(req.body.idUnidade)) {
+			// 	produto.idUnidade = 0;
+			// }
+
+			// if (produto.nome === undefined) produto.nome = "";
 
 			// const achados = await app
 			// 	.db(tabela.produtos)
-			// 	.select(coluna.id, coluna.nome)
-			// 	.whereNull(coluna.removidoEm)
+			// 	// .select(
+			// 	// 	"produtos.id",
+			// 	// 	"produtos.nome",
+			// 	// 	"especies.id as idEspecie",
+			// 	// 	"especies.nome as nomeEspecie"
+			// 	// 	// "unidades.id as idUnidade",
+			// 	// 	// "unidades.nome as nomeUnidade"
+			// 	// )
+			// 	// .join(tabela.especies, "produtos.idEspecie", "=", "especies.id")
+			// 	// .join(tabela.unidades, "produto.idUnidade", "=", "unidades.id")
+			// 	// .whereNull("produtos.removidoEm")
 			// 	.where({ id: produto.id })
 			// 	.whereNull(coluna.removidoEm)
+			// 	// .whereNull("especies.removidoEm")
+			// 	// .whereNull(coluna.removidoEm)
+			// 	.whereNull(coluna.removidoEm)
 			// 	.orWhere({ idEspecie: produto.idEspecie })
+			// 	// .whereNull("unidades.removidoEm")
 			// 	.whereNull(coluna.removidoEm)
 			// 	.orWhere({ idUnidade: produto.idUnidade })
+			// 	//
 			// 	.whereNull(coluna.removidoEm)
 			// 	.orWhere(coluna.nome, "like", produto.nome);
 
-			v.existeOuErro(achados, n.naoEncontreiNada);
+			// // const achados = await app
+			// // 	.db(tabela.produtos)
+			// // 	.select(coluna.id, coluna.nome)
+			// // 	.whereNull(coluna.removidoEm)
+			// // 	.where({ id: produto.id })
+			// // 	.whereNull(coluna.removidoEm)
+			// // 	.orWhere({ idEspecie: produto.idEspecie })
+			// // 	.whereNull(coluna.removidoEm)
+			// // 	.orWhere({ idUnidade: produto.idUnidade })
+			// // 	.whereNull(coluna.removidoEm)
+			// // 	.orWhere(coluna.nome, "like", produto.nome);
 
-			res.json(achados);
+			// v.existeOuErro(achados, n.naoEncontreiNada);
+
+			// res.json(achados);
 		} catch (erro) {
 			res.status(400).send(erro);
 		}

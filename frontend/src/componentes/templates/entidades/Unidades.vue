@@ -84,6 +84,8 @@
 					{
 						key: "id",
 						label: "#",
+						sortable: true,
+						class: "d-none d-sm-block",
 					},
 					{
 						key: "nome",
@@ -93,6 +95,7 @@
 					{
 						key: "fator",
 						label: "Fator",
+						class: "d-none d-sm-block",
 					},
 					{
 						key: "acoes",
@@ -137,7 +140,11 @@
 					.post(`${g.baseApi}unidade`, this.unidade)
 					.then((unidades) => {
 						this.unidades = unidades.data;
-						g.mostrarSucesso("Encontrei essa (s)!");
+						if (this.unidades.length > 0) {
+							g.mostrarSucesso("Encontrei essa (s)!");
+						} else {
+							g.mostrarErro("Não encontrei nada!");
+						}
 					})
 					.catch(g.mostrarErro);
 			},

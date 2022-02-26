@@ -38,13 +38,18 @@ module.exports = (app) => {
 		if (objetoVazio(objeto)) throw erro;
 	}
 
+	function stringVazia(string) {
+		return !string || string === undefined;
+	}
+
 	return {
 		existeOuErro,
 		naoExisteOuErro,
 		igualOuErro,
 		numeroOuErro,
+		éNumero,
 		objetoVazio,
 		objetoNaoVazioOuErro,
-		éNumero,
+		stringVazia,
 	};
 };

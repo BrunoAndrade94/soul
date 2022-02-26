@@ -146,27 +146,29 @@
 				especies: [],
 				unidades: [],
 				campos: [
+					{ key: "id", label: "#", sortable: true, class: "d-none d-sm-block" },
+					{ key: "nome", label: "Produtos", sortable: true },
 					{
-						key: "id",
+						key: "idEspecie",
 						label: "#",
+						sortable: true,
 						class: "d-none d-sm-block",
-						sortable: true,
-					},
-					{
-						key: "nome",
-						label: "Produtos",
-						sortable: true,
 					},
 					{ key: "nomeEspecie", label: "Espécies", sortable: true },
 					{
-						key: "nomeUnidade",
-						label: "Unidades",
+						key: "idUnidade",
+						label: "#",
 						sortable: true,
+						class: "d-none d-sm-block",
 					},
+					{ key: "nomeUnidade", label: "Unidades", sortable: true },
 					{
-						key: "acoes",
-						label: "Opções",
+						key: "fator",
+						label: "Fator",
+						sortable: true,
+						class: "d-none d-sm-block",
 					},
+					{ key: "acoes", label: "Opções" },
 				],
 			};
 		},
@@ -272,9 +274,13 @@
 					.post(`${g.baseApi}produto`, this.produto)
 					.then((produtos) => {
 						this.produtos = produtos.data;
-						this.carregarEspecies();
-						this.carregarUnidades();
-						g.mostrarSucesso("Encontrei essa (s)!");
+						if (this.produtos.length > 0) {
+							g.mostrarSucesso("Encontrei essa (s)!");
+							this.carregarEspecies();
+							this.carregarUnidades();
+						} else {
+							g.mostrarErro("Não encontrei nada!");
+						}
 					})
 					.catch(g.mostrarErro);
 			},
