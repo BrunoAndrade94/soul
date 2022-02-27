@@ -1,6 +1,6 @@
 <template>
 	<div class="opcoes">
-		<b-table hover striped :items="_items" :fileds="_fileds">
+		<b-table responsive hover striped :items="_items" :fileds="_fileds">
 			<template :slot="_slot" :slot-scope="_slot_scope">
 				<b-button variant="info" :v-show="_v_show" @click="_click">
 					<i class="fa-solid fa-cogs" />

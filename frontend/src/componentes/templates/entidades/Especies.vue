@@ -41,7 +41,7 @@
 			</b-row>
 		</b-form>
 		<hr />
-		<b-table hover striped :items="especies" :fields="campos">
+		<b-table responsive hover striped :items="especies" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="info"
@@ -79,6 +79,9 @@
 				modo: "incluir",
 				especie: {},
 				especies: [],
+				pagina: 1,
+				limitePorPagina: 0,
+				totalDeEspecies: 0,
 				campos: [
 					{
 						key: "id",
@@ -116,8 +119,10 @@
 			},
 			carregarEspecies() {
 				this.limpar();
-				axios.get(`${g.baseApi}especies`).then((especies) => {
-					this.especies = especies.data;
+				axios.get(`${g.baseApi}especie`).then((especies) => {
+					this.especies = especies.data.especies;
+					this.totalDeProdutos = especies.data.totalDeProdutos;
+					this.limitePorPagina = especies.data.limitePorPagina;
 				});
 			},
 			limpar(modo = "incluir") {

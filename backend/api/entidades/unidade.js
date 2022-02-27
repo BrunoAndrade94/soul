@@ -1,4 +1,5 @@
 module.exports = (app) => {
+	const limitePorPagina = app.api.relatorios.config.paginacao;
 	const n = app.api.config.notificacoes;
 	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
@@ -26,6 +27,30 @@ module.exports = (app) => {
 			.whereNull(coluna.removidoEm)
 			.orderBy(coluna.nome)
 			.then((unidades) => res.json(unidades))
+			.catch((erro) => res.status(500).send(erro));
+	};
+
+	const obterPorPaginacao = async (req, res) => {
+		const pagina = req.query.pagina || 1;
+		const totalDeUnidadesDoBanco = await app
+			.db(tabela.unidades)
+			.count(coluna.id)
+			.first();
+		const totalDeUnidades = parseInt(totalDeUnidadesDoBanco.count);
+
+		app.db(tabela.unidades)
+			.select(coluna.id, coluna.nome)
+			.whereNull(coluna.removidoEm)
+			.orderBy(coluna.nome)
+			.limit(limitePorPagina)
+			.offset(pagina * limitePorPagina - limitePorPagina)
+			.then((unidades) =>
+				res.json({
+					unidades: unidades,
+					totalDeUnidades,
+					limitePorPagina,
+				})
+			)
 			.catch((erro) => res.status(500).send(erro));
 	};
 
@@ -149,5 +174,6 @@ module.exports = (app) => {
 		obter,
 		obterPorId,
 		obterPorParametro,
+		obterPorPaginacao,
 	};
 };

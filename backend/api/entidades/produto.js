@@ -1,4 +1,5 @@
 module.exports = (app) => {
+	const limitePorPagina = app.api.relatorios.config.paginacao;
 	const n = app.api.config.notificacoes;
 	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
@@ -99,22 +100,41 @@ module.exports = (app) => {
 		}
 	};
 
-	const obterJoin = (req, res) => {
-		app.db(tabela.produtos)
-			.select(
-				produtosId,
-				produtosNome,
-				especiesIdAs,
-				especiesNomeAs,
-				unidadesIdAs,
-				unidadesNomeAs
-			)
-			.whereNull(produtosNull)
-			.orderBy(coluna.nome)
-			.join(tabela.especies, produtosIdEspecie, igual, especiesId)
-			.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
-			.then((produtos) => res.json(produtos))
-			.catch((erro) => res.status(500).send(erro));
+	const obterJoin = async (req, res) => {
+		try {
+			const pagina = req.query.pagina || 1;
+			const totalDeProdutosDoBanco = await app
+				.db(tabela.produtos)
+				.count(coluna.id)
+				.first();
+			const totalDeProdutos = parseInt(totalDeProdutosDoBanco.count);
+
+			app.db(tabela.produtos)
+				.select(
+					produtosId,
+					produtosNome,
+					especiesIdAs,
+					especiesNomeAs,
+					unidadesIdAs,
+					unidadesNomeAs
+				)
+				.whereNull(produtosNull)
+				.orderBy(coluna.nome)
+				.join(tabela.especies, produtosIdEspecie, igual, especiesId)
+				.join(tabela.unidades, produtosIdUnidade, igual, unidadesId)
+				.limit(limitePorPagina)
+				.offset(pagina * limitePorPagina - limitePorPagina)
+				.then((produtos) =>
+					res.json({
+						produtos: produtos,
+						totalDeProdutos,
+						limitePorPagina,
+					})
+				)
+				.catch((erro) => res.status(500).send(erro));
+		} catch (erro) {
+			res.status(400).send(erro);
+		}
 	};
 
 	const obterPorParametro = async (req, res) => {

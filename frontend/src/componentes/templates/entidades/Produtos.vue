@@ -97,7 +97,7 @@
 			</b-row>
 		</b-form>
 		<hr />
-		<b-table hover striped :items="produtos" :fields="campos">
+		<b-table responsive hover striped :items="produtos" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="info"
@@ -122,8 +122,6 @@
 
 <script>
 	import axios from "axios";
-	// import { mapState } from "vuex";
-	// import validacao from "../../../../../backend/api/config/validacoes.js";
 	import v from "@/validarGlobal";
 	import g from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
@@ -131,11 +129,6 @@
 	export default {
 		nome: "Produtos",
 		components: { TituloPagina, BotaoCrud },
-		// computed: {
-		// 	return: mapState({
-		// 		unidade: (state) => state.unidade,
-		// 	}),
-		// },
 		data: function () {
 			return {
 				modo: "incluir",
@@ -145,28 +138,28 @@
 				produtos: [],
 				especies: [],
 				unidades: [],
+				pagina: 1,
+				limitePorPagina: 0,
+				totalDeProdutos: 0,
 				campos: [
-					{ key: "id", label: "#", sortable: true, class: "d-none d-sm-block" },
+					{ key: "id", label: "#", sortable: true },
 					{ key: "nome", label: "Produtos", sortable: true },
 					{
 						key: "idEspecie",
 						label: "#",
 						sortable: true,
-						class: "d-none d-sm-block",
 					},
 					{ key: "nomeEspecie", label: "Espécies", sortable: true },
 					{
 						key: "idUnidade",
 						label: "#",
 						sortable: true,
-						class: "d-none d-sm-block",
 					},
 					{ key: "nomeUnidade", label: "Unidades", sortable: true },
 					{
 						key: "fator",
 						label: "Fator",
 						sortable: true,
-						class: "d-none d-sm-block",
 					},
 					{ key: "acoes", label: "Opções" },
 				],
@@ -192,11 +185,6 @@
 				this.produto = produto;
 
 				this.produtos = [this.produto];
-
-				// this.especies = ["nada"];
-
-				// this.especie.id = [this.produto.idEspecie];
-				// this.unidade = [this.unidades];
 			},
 			carregarProduto(produto) {
 				this.produto = { ...produto };
@@ -205,7 +193,9 @@
 				this.limpar();
 				// OBTEM OS PRODUTOS COM JOIN EM ESPECIES E UNIDADE
 				axios.get(`${g.baseApi}produtos`).then((produtos) => {
-					this.produtos = produtos.data;
+					this.produtos = produtos.data.produtos;
+					this.totalDeProdutos = produtos.data.totalDeProdutos;
+					this.limitePorPagina = produtos.data.limitePorPagina;
 					this.carregarEspecies();
 					this.carregarUnidades();
 				});

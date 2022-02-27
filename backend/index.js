@@ -19,6 +19,7 @@ app.mongoose = mongoose;
 consign()
 	.include("./config/admin/passaporte.js")
 	.then("./config/middlewares.js")
+	.then("./api/relatorios/config/paginacao.js")
 	.then("./api/entidades/db")
 	.then("./api")
 	.then("./config")

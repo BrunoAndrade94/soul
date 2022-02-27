@@ -28,7 +28,7 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
-				<b-col md="10" sm="10">
+				<b-col md="8" sm="8">
 					<b-form-group label="* Unidade:" label-for="unidade-nome">
 						<b-form-input
 							@keydown.enter.native="clicou"
@@ -39,10 +39,20 @@
 						></b-form-input>
 					</b-form-group>
 				</b-col>
+				<b-col md="2" sm="2" xl="2">
+					<b-form-group label="* Fator:" label-for="unidade-fator">
+						<b-form-input
+							id="unidade-fator"
+							v-model="unidade.fator"
+							type="number"
+							placeholder=""
+						></b-form-input>
+					</b-form-group>
+				</b-col>
 			</b-row>
 		</b-form>
 		<hr />
-		<b-table hover striped :items="unidades" :fields="campos">
+		<b-table responsive hover striped :items="unidades" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="info"
@@ -67,25 +77,25 @@
 
 <script>
 	import axios from "axios";
-	// import { mapState } from "vuex";
 	import g from "@/global";
 	import TituloPagina from "../TituloPagina.vue";
 	import BotaoCrud from "../botoes/BotaoCrud.vue";
 	export default {
 		nome: "Unidades",
 		components: { TituloPagina, BotaoCrud },
-		// computed: mapState(["unidade"]),
 		data: function () {
 			return {
 				modo: "incluir",
 				unidade: {},
 				unidades: [],
+				pagina: 1,
+				limitePorPagina: 0,
+				totalDeUnidades: 0,
 				campos: [
 					{
 						key: "id",
 						label: "#",
 						sortable: true,
-						class: "d-none d-sm-block",
 					},
 					{
 						key: "nome",
@@ -95,7 +105,6 @@
 					{
 						key: "fator",
 						label: "Fator",
-						class: "d-none d-sm-block",
 					},
 					{
 						key: "acoes",
@@ -127,8 +136,10 @@
 			},
 			carregarUnidades() {
 				this.limpar();
-				axios.get(`${g.baseApi}unidades`).then((unidades) => {
-					this.unidades = unidades.data;
+				axios.get(`${g.baseApi}unidade`).then((unidades) => {
+					this.unidades = unidades.data.unidades;
+					this.totalDeProdutos = unidades.data.totalDeProdutos;
+					this.limitePorPagina = unidades.data.limitePorPagina;
 				});
 			},
 			limpar(modo = "incluir") {

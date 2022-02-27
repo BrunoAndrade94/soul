@@ -90,7 +90,7 @@
 			</b-row>
 		</b-form>
 		<hr />
-		<b-table hover striped :items="modulos" :fields="campos">
+		<b-table responsive hover striped :items="modulos" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="info"
@@ -160,7 +160,7 @@
 			},
 			opcoesModulo(modulo, modo) {
 				this.obterModuloAnterior();
-				console.log(this.moduloAnterior);
+				// console.log(this.moduloAnterior);
 				this.modulo = modulo;
 				this.modulos = [{ ...this.modulo }];
 				this.modo = modo;

@@ -106,7 +106,7 @@
 			<hr />
 		</b-form>
 		<hr />
-		<b-table hover striped :items="usuarios" :fields="campos">
+		<b-table responsive hover striped :items="usuarios" :fields="campos">
 			<template slot="acoes" slot-scope="data">
 				<b-button
 					variant="info"

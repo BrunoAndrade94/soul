@@ -1,4 +1,5 @@
 module.exports = (app) => {
+	const limitePorPagina = app.api.relatorios.config.paginacao;
 	const n = app.api.config.notificacoes;
 	const v = app.api.config.validacoes;
 	const tabela = app.api.entidades.db.tabelas;
@@ -48,6 +49,30 @@ module.exports = (app) => {
 			.whereNull(coluna.removidoEm)
 			.orderBy(coluna.nome)
 			.then((especies) => res.json(especies))
+			.catch((erro) => res.status(500).send(erro));
+	};
+
+	const obterPorPaginacao = async (req, res) => {
+		const pagina = req.query.pagina || 1;
+		const totalDeEspeciesDoBanco = await app
+			.db(tabela.especies)
+			.count(coluna.id)
+			.first();
+		const totalDeEspecies = parseInt(totalDeEspeciesDoBanco.count);
+
+		app.db(tabela.especies)
+			.select(coluna.id, coluna.nome)
+			.whereNull(coluna.removidoEm)
+			.orderBy(coluna.nome)
+			.limit(limitePorPagina)
+			.offset(pagina * limitePorPagina - limitePorPagina)
+			.then((especies) =>
+				res.json({
+					especies: especies,
+					totalDeEspecies,
+					limitePorPagina,
+				})
+			)
 			.catch((erro) => res.status(500).send(erro));
 	};
 
@@ -126,5 +151,12 @@ module.exports = (app) => {
 		}
 	};
 
-	return { incluir, atualizar, obter, obterPorParametro, remover };
+	return {
+		incluir,
+		remover,
+		atualizar,
+		obter,
+		obterPorParametro,
+		obterPorPaginacao,
+	};
 };
